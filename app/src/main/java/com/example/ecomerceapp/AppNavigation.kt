@@ -6,8 +6,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.ecomerceapp.screen.AuthScreen
+import com.example.ecomerceapp.screen.HomeScreen
 import com.example.ecomerceapp.screen.LoginScreen
 import com.example.ecomerceapp.screen.SignUpScreen
+import com.example.ecomerceapp.screen.VerifyEmailScreen
 
 @Composable
 fun  AppNavigation(topPadding: Dp) {
@@ -21,6 +23,12 @@ fun  AppNavigation(topPadding: Dp) {
         }
         composable("signup"){
             SignUpScreen(topPadding,navController)
+        }
+        composable("verify-email"){
+            VerifyEmailScreen(topPadding,navController);
+        }
+        composable("home") {
+            HomeScreen(topPadding,navController)
         }
 
     }

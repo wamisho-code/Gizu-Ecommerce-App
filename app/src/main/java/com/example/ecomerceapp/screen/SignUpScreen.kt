@@ -1,5 +1,6 @@
 package com.example.ecomerceapp.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,15 +12,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
@@ -54,14 +54,21 @@ import com.example.ecomerceapp.ui.theme.montserrat_bold_font
 import com.example.ecomerceapp.ui.theme.montserrat_regular_font
 import com.example.ecomerceapp.ui.theme.orangeGradientHorizontal
 import com.example.ecomerceapp.ui.theme.whiteBackgroundColor
-import com.example.ecomerceapp.viewmodel.SignUpViewModel
+import com.example.ecomerceapp.viewmodel.AuthenticationViewModel
+import com.example.ecomerceapp.viewmodel.SignUpUIViewModel
 
 @Composable
-fun SignUpScreen(topPadding: Dp, navController: NavHostController,viewModel: SignUpViewModel= viewModel()) {
+fun SignUpScreen(topPadding: Dp,
+                 navController: NavHostController,
+                 viewModel: SignUpUIViewModel= viewModel(),
+                 authenticationViewModel: AuthenticationViewModel=viewModel()
+) {
+    var context= LocalContext.current
     var showPassword by remember {
         mutableStateOf(false)
     }
     val uiState by viewModel.signUpUiState.collectAsStateWithLifecycle();
+
     val composition by rememberLottieComposition(
         LottieCompositionSpec.RawRes(R.raw.lottie_signin_two_people_animation))
 
@@ -191,8 +198,33 @@ fun SignUpScreen(topPadding: Dp, navController: NavHostController,viewModel: Sig
             }
         )
         Spacer(modifier = Modifier.height(20.dp))
+        if(uiState.isLoading){
+            CircularProgressIndicator(
+                modifier = Modifier.size(20.dp),
+                color = Orange
+            )
+        }
+        Spacer(modifier = Modifier.height(20.dp))
         Button(
-            onClick = {},
+            onClick = {
+                viewModel.setIsLoadingTrue()
+                val errorMessage= viewModel.validateSignUp()
+                if(errorMessage==null){
+                    if(viewModel.areAllInputsValid.value){
+                        authenticationViewModel.signUp(uiState) { success, message ->
+
+                            if (success) {
+                                viewModel.setIsLoadingFasle()
+                                navController.navigate("verify-email")
+                            } else {
+                                viewModel.setIsLoadingFasle()
+                                Toast.makeText(context,message, Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+
+                }
+            },
             modifier = Modifier.width(160.dp)
                 .clip(RoundedCornerShape(30.dp))
                 .background(brush = orangeGradientHorizontal),

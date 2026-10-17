@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "849855331407",
+    "project_id": "gizu-ecom-app",
+    "storage_bucket": "gizu-ecom-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849855331407:android:c98ccaa705a984cd263e3a",
+        "android_client_info": {
+          "package_name": "com.example.ecomerceapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCP804SmqW91cuvzPnTRHIeISvLTb8Ipl0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

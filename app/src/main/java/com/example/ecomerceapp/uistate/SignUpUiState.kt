@@ -5,4 +5,5 @@ data class SignUpUiState(
      val phoneNumber:String="",
      val email:String="",
      val password:String="",
+     val isLoading: Boolean=false
 )

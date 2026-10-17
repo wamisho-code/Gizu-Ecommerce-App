@@ -33,7 +33,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,10 +51,10 @@ import com.example.ecomerceapp.ui.theme.montserrat_bold_font
 import com.example.ecomerceapp.ui.theme.montserrat_regular_font
 import com.example.ecomerceapp.ui.theme.orangeGradientHorizontal
 import com.example.ecomerceapp.ui.theme.whiteBackgroundColor
-import com.example.ecomerceapp.viewmodel.LoginViewModel
+import com.example.ecomerceapp.viewmodel.LoginUIViewModel
 
 @Composable
-fun LoginScreen(topPadding: Dp, navController: NavHostController,viewModel: LoginViewModel=viewModel()) {
+fun LoginScreen(topPadding: Dp, navController: NavHostController,viewModel: LoginUIViewModel=viewModel()) {
     val uiState by viewModel.loginUiState.collectAsStateWithLifecycle()
     var showPassword by remember {
         mutableStateOf(false)
@@ -84,20 +83,20 @@ fun LoginScreen(topPadding: Dp, navController: NavHostController,viewModel: Logi
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(
-            text = "Hello there!",
+            text = "Welcome back!",
             style =  TextStyle(
                 fontFamily = montserrat_bold_font,
-                fontSize = 20.sp
+                fontSize = 24.sp
             ),
             textAlign = TextAlign.Center
 
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(
-            text = "Login",
+            text = "Login in to your existing Account",
             style =  TextStyle(
                 fontFamily = montserrat_bold_font,
-                fontSize = 22.sp
+                fontSize = 20.sp
             ),
             textAlign = TextAlign.Center
 
