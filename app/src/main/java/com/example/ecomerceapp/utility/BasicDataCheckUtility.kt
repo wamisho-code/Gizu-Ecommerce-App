@@ -45,12 +45,12 @@ class BasicDataCheckUtility(signUpUIViewModel: SignUpUIViewModel) {
 
                 val isStrongPassword=password.matches(passwordRegex.toRegex())
                 val message= when{
-                    !isValidPhone && !isValidPhone ->
+                    !isValidPhone && !isStrongPassword ->
                         "Invalid phone number and weak password"
                     !isValidPhone->
                         "Invalid phone number"
                     !isStrongPassword->
-                        "Password must be Must be at least 8 characters long"+
+                        "Password must be Must be at least 6 characters long"+
                                 "\nMust contain at least one special character,"+
                                 "\none lowercase letter and one uppercase letter"
                     else -> null

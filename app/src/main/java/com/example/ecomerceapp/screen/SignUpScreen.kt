@@ -67,7 +67,10 @@ fun SignUpScreen(topPadding: Dp,
     var showPassword by remember {
         mutableStateOf(false)
     }
-    val uiState by viewModel.signUpUiState.collectAsStateWithLifecycle();
+    val uiState by viewModel.signUpUiState.collectAsStateWithLifecycle()
+    val isPasswordStrong by viewModel.isPasswordStrong.collectAsStateWithLifecycle()
+    val isPhoneValid by viewModel.isPhoneValid.collectAsStateWithLifecycle()
+    val areAllInputsValid by viewModel.areAllInputsValid.collectAsStateWithLifecycle()
 
     val composition by rememberLottieComposition(
         LottieCompositionSpec.RawRes(R.raw.lottie_signin_two_people_animation))
@@ -131,6 +134,7 @@ fun SignUpScreen(topPadding: Dp,
             onValueChange = {
                 viewModel.setPhone(it)
             },
+            isError = !isPhoneValid,
             placeholder = {
                 Text("09-XX-XX-XX-XX", fontFamily = montserrat_regular_font)
             },
@@ -171,6 +175,7 @@ fun SignUpScreen(topPadding: Dp,
                 focusedIndicatorColor = Orange,
                 focusedLabelColor = Crimson
             ),
+            isError = !isPasswordStrong,
             onValueChange = {
                 viewModel.setPassword(it)
             },
@@ -207,10 +212,11 @@ fun SignUpScreen(topPadding: Dp,
         Spacer(modifier = Modifier.height(20.dp))
         Button(
             onClick = {
-                viewModel.setIsLoadingTrue()
+
                 val errorMessage= viewModel.validateSignUp()
                 if(errorMessage==null){
-                    if(viewModel.areAllInputsValid.value){
+                    viewModel.setIsLoadingTrue()
+                    if(areAllInputsValid){
                         authenticationViewModel.signUp(uiState) { success, message ->
 
                             if (success) {
@@ -223,6 +229,8 @@ fun SignUpScreen(topPadding: Dp,
                         }
                     }
 
+                }else{
+                    Toast.makeText(context,errorMessage, Toast.LENGTH_LONG).show()
                 }
             },
             modifier = Modifier.width(160.dp)

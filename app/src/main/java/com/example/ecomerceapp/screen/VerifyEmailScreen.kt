@@ -19,32 +19,51 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.ecomerceapp.ui.theme.Blue
 import com.example.ecomerceapp.ui.theme.montserrat_regular_font
 import com.example.ecomerceapp.viewmodel.AuthenticationViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 
 @Composable
 fun VerifyEmailScreen(topPadding: Dp,navController: NavController,authenticationViewModel: AuthenticationViewModel= viewModel()){
     val context = LocalContext.current
     val isEmailVerified by authenticationViewModel.isEmailVerified.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        authenticationViewModel.checkEmailIsVerified(){sucess,message->
-                if(!sucess && message!=null){
-                    Toast.makeText(context,message, Toast.LENGTH_SHORT).show()
-                }
-        }
-    }
-    // Navigate automatically when verification is detected
+    // 1. Automatically navigate to home as soon as isEmailVerified becomes true
     LaunchedEffect(isEmailVerified) {
         if (isEmailVerified) {
-            navController.navigate("home")
-
+            // Use popUpTo to clear the login/verify stack so the back button doesn't return here
+            navController.navigate("home") {
+                popUpTo("verifyEmail") { inclusive = true }
             }
+        }
     }
+
+    // 2. Poll Firebase every 3 seconds to check if the user verified their email
+    LaunchedEffect(Unit) {
+        while (isActive) {
+            authenticationViewModel.checkEmailIsVerified { success, message ->
+                // Optionally handle errors, but hide silent background failures
+                if (!success && message != null && !message.contains("network", ignoreCase = true)) {
+                    // Fail silently in the background unless it's a critical error
+                    Toast.makeText(context,message, Toast.LENGTH_SHORT).show()
+                }
+            }
+            delay(3000) // Wait 3 seconds before checking again
+        }
+    }
+
+    // 3. Force an immediate check right when the user returns to the app (Optional but fast)
+    LifecycleEventEffect (Lifecycle.Event.ON_RESUME) {
+        authenticationViewModel.checkEmailIsVerified { _, _ -> }
+    }
+
 
 
     Column(
@@ -63,11 +82,11 @@ fun VerifyEmailScreen(topPadding: Dp,navController: NavController,authentication
             onClick = {
                 authenticationViewModel.verifyEmail(){success,message->
                     val message= when{
-                        success-> "Account Created Successfully!"
+                        success-> "Verification link has been resent to \nemail address you entered"
                         else -> message
                     }
                     Toast.makeText(context,message, Toast.LENGTH_SHORT).show()
-
+                    println(message)
                 }
             },
             colors = ButtonDefaults.buttonColors(

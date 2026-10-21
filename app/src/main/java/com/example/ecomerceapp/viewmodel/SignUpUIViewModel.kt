@@ -8,13 +8,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class SignUpUIViewModel: ViewModel() {
-    private val _isPasswordStrong = MutableStateFlow(false)
+    private val _isPasswordStrong = MutableStateFlow(true)
     val isPasswordStrong=_isPasswordStrong.asStateFlow()
 
     private val _areAllInputsValid = MutableStateFlow(false)
-    val areAllInputsValid=_isPasswordStrong.asStateFlow()
+    val areAllInputsValid=_areAllInputsValid.asStateFlow()
 
-    private val _isPhoneValid = MutableStateFlow(false)
+    private val _isPhoneValid = MutableStateFlow(true)
     val isPhoneValid=_isPasswordStrong.asStateFlow()
 
     private val _uiState = MutableStateFlow(

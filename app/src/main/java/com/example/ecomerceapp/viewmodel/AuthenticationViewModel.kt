@@ -45,40 +45,63 @@ class AuthenticationViewModel(): ViewModel() {
                 }
             }
     }
-    fun checkEmailIsVerified(onResult:(Boolean,String?)->Unit){
-        val user= auth.currentUser
-        if(user==null){
-            onResult(false,"User is not logged in")
+    fun checkEmailIsVerified(onResult: (Boolean, String?) -> Unit) {
+
+        val user = auth.currentUser
+
+        if (user == null) {
+            onResult(false, "User is not logged in")
             return
         }
+        if (_isEmailVerified.value ) return
 
         user.reload()
-            .addOnCompleteListener {
-                if(it.isSuccessful){
-                    val isVerified= user.isEmailVerified
-                    _isEmailVerified.value= isVerified
-                    if(isVerified==true){
-                        val userId= user.uid
-                        val userModel= UserModel(
-                            fullName = signUpUiState?.fullName,
-                            phoneNumber = signUpUiState?.phoneNumber,
-                            email = signUpUiState?.email,
-                            userId = userId
-                        )
-                        fireStore.collection("users")
-                            .document(userId)
-                            .set(userModel)
-                            .addOnCompleteListener {
-                                if(it.isSuccessful){
-                                    onResult(true,null)
-                                }else
-                                    onResult(false,it.exception?.localizedMessage)
-                            }
-                    }else{
-                    onResult(false,it.exception?.localizedMessage)}
-                }else{
-                    onResult(false,it.exception?.localizedMessage)
+            .addOnCompleteListener { task ->
+
+                if (!task.isSuccessful) {
+                    onResult(
+                        false,
+                        task.exception?.localizedMessage
+                    )
+                    return@addOnCompleteListener
                 }
+
+                val currentUser = auth.currentUser
+
+                if (currentUser?.isEmailVerified != true) {
+                    onResult(false, null)
+                    return@addOnCompleteListener
+                }
+
+                // Email is verified, now save the user in Firestore
+                val userId = currentUser.uid
+
+                val userModel = UserModel(
+                    fullName = signUpUiState?.fullName,
+                    phoneNumber = signUpUiState?.phoneNumber,
+                    email = currentUser.email,
+                    userId = userId
+                )
+
+                fireStore.collection("users")
+                    .document(userId)
+                    .set(userModel)
+                    .addOnCompleteListener { firestoreTask ->
+
+                        if (firestoreTask.isSuccessful) {
+
+                            _isEmailVerified.value = true
+
+                            onResult(true, null)
+
+                        } else {
+
+                            onResult(
+                                false,
+                                firestoreTask.exception?.localizedMessage
+                            )
+                        }
+                    }
             }
     }
 
