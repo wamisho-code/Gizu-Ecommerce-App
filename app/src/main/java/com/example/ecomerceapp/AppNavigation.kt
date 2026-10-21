@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.ecomerceapp.screen.AuthScreen
+import com.example.ecomerceapp.screen.FirstScreen
 import com.example.ecomerceapp.screen.HomeScreen
 import com.example.ecomerceapp.screen.LoginScreen
 import com.example.ecomerceapp.screen.SignUpScreen
@@ -14,7 +15,11 @@ import com.example.ecomerceapp.screen.VerifyEmailScreen
 @Composable
 fun  AppNavigation(topPadding: Dp) {
     val navController = rememberNavController()
-    NavHost(navController, startDestination = "auth") {
+
+    NavHost(navController, startDestination = "first_screen") {
+        composable("first_screen") {
+            FirstScreen(navController)
+        }
         composable("auth"){
             AuthScreen(topPadding,navController)
         }

@@ -33,6 +33,7 @@ import kotlinx.coroutines.isActive
 @Composable
 fun VerifyEmailScreen(topPadding: Dp,navController: NavController,authenticationViewModel: AuthenticationViewModel= viewModel()){
     val context = LocalContext.current
+    var callAgain=true
     val isEmailVerified by authenticationViewModel.isEmailVerified.collectAsStateWithLifecycle()
 
     // 1. Automatically navigate to home as soon as isEmailVerified becomes true
@@ -47,15 +48,18 @@ fun VerifyEmailScreen(topPadding: Dp,navController: NavController,authentication
 
     // 2. Poll Firebase every 3 seconds to check if the user verified their email
     LaunchedEffect(Unit) {
-        while (isActive) {
+        while (isActive && callAgain) {
             authenticationViewModel.checkEmailIsVerified { success, message ->
                 // Optionally handle errors, but hide silent background failures
                 if (!success && message != null && !message.contains("network", ignoreCase = true)) {
                     // Fail silently in the background unless it's a critical error
-                    Toast.makeText(context,message, Toast.LENGTH_SHORT).show()
+                    if(message=="User is not logged in")
+                        callAgain=false
+                    Toast.makeText(context,"Something went wrong", Toast.LENGTH_SHORT).show()
                 }
             }
-            delay(3000) // Wait 3 seconds before checking again
+            if(callAgain)
+                delay(3000) // Wait 3 seconds before checking again
         }
     }
 
