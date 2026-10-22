@@ -97,14 +97,14 @@ fun VerifyEmailScreen(navController: NavController,authenticationViewModel: Auth
             )
 
         }
-        Spacer(modifier = Modifier.height(200.dp))
+        Spacer(modifier = Modifier.height(80.dp))
         Text(
             text = "We have sent verification link to \nemail address you entered",
             fontFamily = montserrat_regular_font,
             color = Color.Gray,
             fontStyle = FontStyle.Italic
         )
-        Spacer(modifier = Modifier.height(400.dp))
+        Spacer(modifier = Modifier.height(200.dp))
         Button(
             onClick = {
                 authenticationViewModel.verifyEmail(){success,message->
