@@ -1,6 +1,7 @@
 package com.example.ecomerceapp.viewmodel
 
 import androidx.lifecycle.ViewModel
+import com.example.ecomerceapp.model.SignUpValidationResult
 import com.example.ecomerceapp.uistate.SignUpUiState
 import com.example.ecomerceapp.utility.BasicDataCheckUtility
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,8 +12,6 @@ class SignUpUIViewModel: ViewModel() {
     private val _isPasswordStrong = MutableStateFlow(true)
     val isPasswordStrong=_isPasswordStrong.asStateFlow()
 
-    private val _areAllInputsValid = MutableStateFlow(false)
-    val areAllInputsValid=_areAllInputsValid.asStateFlow()
 
     private val _isPhoneValid = MutableStateFlow(true)
     val isPhoneValid=_isPasswordStrong.asStateFlow()
@@ -55,11 +54,10 @@ class SignUpUIViewModel: ViewModel() {
     }
 
 
-    fun validateSignUp():String?{
-        val validatedResult=  BasicDataCheckUtility.checkForSignUpUIState(signUpUiState.value)
+    fun validateSignUp(): SignUpValidationResult{
+        val validatedResult=  BasicDataCheckUtility.checkForSignUpUIStateInput(signUpUiState.value)
         _isPhoneValid.value= validatedResult.isPhoneValid
         _isPasswordStrong.value= validatedResult.isPasswordStrong
-        _areAllInputsValid.value=validatedResult.isValid
-        return validatedResult.message
+        return validatedResult
     }
 }

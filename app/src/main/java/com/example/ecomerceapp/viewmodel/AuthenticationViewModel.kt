@@ -2,6 +2,8 @@ package com.example.ecomerceapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.example.ecomerceapp.model.UserModel
+import com.example.ecomerceapp.repository.AuthRepository
+import com.example.ecomerceapp.uistate.LoginUiState
 import com.example.ecomerceapp.uistate.SignUpUiState
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -11,98 +13,35 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class AuthenticationViewModel(): ViewModel() {
+class AuthenticationViewModel(private val authRepository:
+                              AuthRepository= AuthRepository()): ViewModel() {
     private var _isEmailVerified = MutableStateFlow(false)
     val isEmailVerified= _isEmailVerified.asStateFlow()
-    private var _showVerify = MutableStateFlow(false)
-    val showVerify= _showVerify.asStateFlow()
-    private val auth = FirebaseAuth.getInstance()
-    private val fireStore = FirebaseFirestore.getInstance()
+
     private var signUpUiState: SignUpUiState?=null;
 
-    fun login(){}
+    fun login(loginUiState: LoginUiState,onResult:(Boolean,String?)->Unit){
+            authRepository.login(loginUiState.email,loginUiState.password,onResult)
+    }
     fun signUp(signUpUiState: SignUpUiState,onResult:(Boolean,String?)->Unit){
         this.signUpUiState=signUpUiState
-        auth.createUserWithEmailAndPassword(signUpUiState.email,signUpUiState.password)
-            .addOnCompleteListener { signUpUiState
-                if(it.isSuccessful){
-                    verifyEmail(onResult)
-                }else{
-                    onResult(false,it.exception?.localizedMessage)
-                }
-
-            }
+        authRepository.signUp(signUpUiState.email,signUpUiState.password,onResult)
     }
     fun verifyEmail(onResult:(Boolean,String?)->Unit){
-        val user = auth.currentUser
-        user?.sendEmailVerification()
-            ?.addOnCompleteListener {
-                if(it.isSuccessful){
-                    onResult(true,null)
-                }else{
-                    _showVerify.value=false;
-                    onResult(false,it.exception?.localizedMessage)
-                }
-            }
+        authRepository.verifyEmail(onResult)
     }
+
     fun checkEmailIsVerified(onResult: (Boolean, String?) -> Unit) {
 
-        val user = auth.currentUser
-
-        if (user == null) {
-            onResult(false, "User is not logged in")
-            return
-        }
         if (_isEmailVerified.value ) return
 
-        user.reload()
-            .addOnCompleteListener { task ->
-
-                if (!task.isSuccessful) {
-                    onResult(
-                        false,
-                        task.exception?.localizedMessage
-                    )
-                    return@addOnCompleteListener
+        authRepository.checkEmailIsVerified(signUpUiState?.fullName,
+            signUpUiState?.phoneNumber
+        ){ bool, message->
+                if(bool==true){
+                    _isEmailVerified.value = true
                 }
-
-                val currentUser = auth.currentUser
-
-                if (currentUser?.isEmailVerified != true) {
-                    onResult(false, null)
-                    return@addOnCompleteListener
-                }
-
-                // Email is verified, now save the user in Firestore
-                val userId = currentUser.uid
-
-                val userModel = UserModel(
-                    fullName = signUpUiState?.fullName,
-                    phoneNumber = signUpUiState?.phoneNumber,
-                    email = currentUser.email,
-                    userId = userId
-                )
-
-                fireStore.collection("users")
-                    .document(userId)
-                    .set(userModel)
-                    .addOnCompleteListener { firestoreTask ->
-
-                        if (firestoreTask.isSuccessful) {
-
-                            _isEmailVerified.value = true
-
-                            onResult(true, null)
-
-                        } else {
-
-                            onResult(
-                                false,
-                                firestoreTask.exception?.localizedMessage
-                            )
-                        }
-                    }
-            }
+        }
     }
 
 }

@@ -2,6 +2,7 @@ package com.example.ecomerceapp.screen
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -32,10 +33,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,14 +57,14 @@ import com.example.ecomerceapp.ui.theme.montserrat_bold_font
 import com.example.ecomerceapp.ui.theme.montserrat_regular_font
 import com.example.ecomerceapp.ui.theme.orangeGradientHorizontal
 import com.example.ecomerceapp.ui.theme.whiteBackgroundColor
+import com.example.ecomerceapp.utility.ToastUtility
 import com.example.ecomerceapp.viewmodel.AuthenticationViewModel
 import com.example.ecomerceapp.viewmodel.SignUpUIViewModel
 
 @Composable
-fun SignUpScreen(topPadding: Dp,
-                 navController: NavHostController,
+fun SignUpScreen(navController: NavHostController,
                  viewModel: SignUpUIViewModel= viewModel(),
-                 authenticationViewModel: AuthenticationViewModel=viewModel()
+                 authenticationViewModel: AuthenticationViewModel
 ) {
     var context= LocalContext.current
     var showPassword by remember {
@@ -70,7 +73,6 @@ fun SignUpScreen(topPadding: Dp,
     val uiState by viewModel.signUpUiState.collectAsStateWithLifecycle()
     val isPasswordStrong by viewModel.isPasswordStrong.collectAsStateWithLifecycle()
     val isPhoneValid by viewModel.isPhoneValid.collectAsStateWithLifecycle()
-    val areAllInputsValid by viewModel.areAllInputsValid.collectAsStateWithLifecycle()
 
     val composition by rememberLottieComposition(
         LottieCompositionSpec.RawRes(R.raw.lottie_signin_two_people_animation))
@@ -83,14 +85,13 @@ fun SignUpScreen(topPadding: Dp,
     Column(
         modifier = Modifier
             .background(whiteBackgroundColor)
-            .padding(top = topPadding)
             .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         LottieAnimation(
-            modifier = Modifier.size(250.dp),
+            modifier = Modifier.size(220.dp),
             composition=composition,
             progress = progress
         )
@@ -213,24 +214,27 @@ fun SignUpScreen(topPadding: Dp,
         Button(
             onClick = {
 
-                val errorMessage= viewModel.validateSignUp()
-                if(errorMessage==null){
-                    viewModel.setIsLoadingTrue()
-                    if(areAllInputsValid){
-                        authenticationViewModel.signUp(uiState) { success, message ->
+                val validatedInput= viewModel.validateSignUp()
+                if(validatedInput.message ==null){
 
+                    if(validatedInput.isValid){
+                        viewModel.setIsLoadingTrue()
+                        authenticationViewModel.signUp(uiState) { success, message ->
+                            viewModel.setIsLoadingFasle()
                             if (success) {
-                                viewModel.setIsLoadingFasle()
                                 navController.navigate("verify-email")
-                            } else {
-                                viewModel.setIsLoadingFasle()
-                                Toast.makeText(context,message, Toast.LENGTH_LONG).show()
+                            } else if(message==null) {
+                                ToastUtility.makeLongToast(context,"Account exists verify Email")
+                                navController.navigate("verify-email")
+                            }else{
+                                ToastUtility.makeLongToast(context,message!!)
                             }
                         }
                     }
 
                 }else{
-                    Toast.makeText(context,errorMessage, Toast.LENGTH_LONG).show()
+                    viewModel.setIsLoadingFasle()
+                    ToastUtility.makeLongToast(context,validatedInput.message)
                 }
             },
             modifier = Modifier.width(160.dp)
@@ -246,6 +250,23 @@ fun SignUpScreen(topPadding: Dp,
                 fontSize = 18.sp
             )
         }
+        Spacer(modifier = Modifier.height(15.dp))
+        Text(
+            modifier = Modifier.padding(5.dp)
+                .clickable(
+                    onClick = {
+                        navController.navigate("login"){
+                            popUpTo("signup"){inclusive=true}
+                        }
+                    }
+                ),
+            text = "Already have account",
+            color = Color.Blue,
+            style = TextStyle(
+                fontSize = 17.sp,
+            ),
+            textDecoration = TextDecoration.Underline
+        )
 
 
 

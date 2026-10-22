@@ -19,6 +19,9 @@ val montserrat_bold_font= FontFamily(
 val montserrat_regular_font= FontFamily(
     Font(R.font.montserrat_regular)
 )
+val pattaya_regular_font= FontFamily(
+    Font(R.font.pattaya_regular)
+)
 val Typography = Typography(
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,

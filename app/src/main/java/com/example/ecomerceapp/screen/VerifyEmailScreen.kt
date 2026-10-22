@@ -1,13 +1,18 @@
 package com.example.ecomerceapp.screen
 
+import android.widget.Button
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
@@ -26,12 +32,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.ecomerceapp.ui.theme.Blue
 import com.example.ecomerceapp.ui.theme.montserrat_regular_font
+import com.example.ecomerceapp.utility.ToastUtility
 import com.example.ecomerceapp.viewmodel.AuthenticationViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 
 @Composable
-fun VerifyEmailScreen(topPadding: Dp,navController: NavController,authenticationViewModel: AuthenticationViewModel= viewModel()){
+fun VerifyEmailScreen(navController: NavController,authenticationViewModel: AuthenticationViewModel){
     val context = LocalContext.current
     var callAgain=true
     val isEmailVerified by authenticationViewModel.isEmailVerified.collectAsStateWithLifecycle()
@@ -55,7 +62,8 @@ fun VerifyEmailScreen(topPadding: Dp,navController: NavController,authentication
                     // Fail silently in the background unless it's a critical error
                     if(message=="User is not logged in")
                         callAgain=false
-                    Toast.makeText(context,"Something went wrong", Toast.LENGTH_SHORT).show()
+                    ToastUtility.makeShortToast(context,"Something went Wrong")
+
                 }
             }
             if(callAgain)
@@ -72,9 +80,24 @@ fun VerifyEmailScreen(topPadding: Dp,navController: NavController,authentication
 
     Column(
         modifier = Modifier.fillMaxSize()
-            .padding(top = topPadding, start = 20.dp, end = 20.dp)
+            .padding(top = 60.dp, start = 20.dp, end = 20.dp)
 
     ) {
+        IconButton(
+            onClick = {
+                navController.navigate("signup"){
+                    popUpTo("auth"){inclusive=false}
+                }
+            }
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                tint = Color.White,
+                contentDescription = "back"
+            )
+
+        }
+        Spacer(modifier = Modifier.height(200.dp))
         Text(
             text = "We have sent verification link to \nemail address you entered",
             fontFamily = montserrat_regular_font,
@@ -89,8 +112,8 @@ fun VerifyEmailScreen(topPadding: Dp,navController: NavController,authentication
                         success-> "Verification link has been resent to \nemail address you entered"
                         else -> message
                     }
-                    Toast.makeText(context,message, Toast.LENGTH_SHORT).show()
-                    println(message)
+                    ToastUtility.makeLongToast(context,message!!)
+                    //println(message)
                 }
             },
             colors = ButtonDefaults.buttonColors(

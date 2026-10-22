@@ -1,6 +1,8 @@
 package com.example.ecomerceapp.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -27,12 +30,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,10 +56,17 @@ import com.example.ecomerceapp.ui.theme.montserrat_bold_font
 import com.example.ecomerceapp.ui.theme.montserrat_regular_font
 import com.example.ecomerceapp.ui.theme.orangeGradientHorizontal
 import com.example.ecomerceapp.ui.theme.whiteBackgroundColor
+import com.example.ecomerceapp.utility.BasicDataCheckUtility
+import com.example.ecomerceapp.utility.ToastUtility
+import com.example.ecomerceapp.viewmodel.AuthenticationViewModel
 import com.example.ecomerceapp.viewmodel.LoginUIViewModel
 
 @Composable
-fun LoginScreen(topPadding: Dp, navController: NavHostController,viewModel: LoginUIViewModel=viewModel()) {
+fun LoginScreen(navController: NavHostController
+                ,viewModel: LoginUIViewModel=viewModel(),
+                authenticationViewModel: AuthenticationViewModel= viewModel()
+) {
+    val context = LocalContext.current
     val uiState by viewModel.loginUiState.collectAsStateWithLifecycle()
     var showPassword by remember {
         mutableStateOf(false)
@@ -70,14 +82,13 @@ fun LoginScreen(topPadding: Dp, navController: NavHostController,viewModel: Logi
     Column(
         modifier = Modifier
             .background(whiteBackgroundColor)
-            .padding(top = topPadding)
             .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         LottieAnimation(
-            modifier = Modifier.size(250.dp),
+            modifier = Modifier.size(220.dp),
             composition=composition,
             progress = progress
         )
@@ -158,8 +169,32 @@ fun LoginScreen(topPadding: Dp, navController: NavHostController,viewModel: Logi
             }
         )
         Spacer(modifier = Modifier.height(20.dp))
+        if(uiState.isLoading){
+            CircularProgressIndicator(
+                modifier = Modifier.size(20.dp),
+                color = Orange
+            )
+        }
+        Spacer(modifier = Modifier.height(20.dp))
         Button(
-            onClick = {},
+            onClick = {
+                val message= viewModel.validateInput(uiState)
+                if (message==null){
+                    viewModel.isLoadingTrue()
+                    authenticationViewModel.login(loginUiState = uiState){bool,message->
+                        viewModel.isLoadingFalse()
+                        if(bool){
+                            navController.navigate("home")
+                        }else{
+                            ToastUtility.makeLongToast(context,message!!)
+                        }
+                    }
+                }else{
+                    ToastUtility.makeLongToast(context,message)
+                }
+
+
+            },
             modifier = Modifier.width(160.dp)
                 .clip(RoundedCornerShape(30.dp))
                 .background(brush = orangeGradientHorizontal),
@@ -173,6 +208,23 @@ fun LoginScreen(topPadding: Dp, navController: NavHostController,viewModel: Logi
                 fontSize = 18.sp
             )
         }
+        Spacer(modifier = Modifier.height(15.dp))
+        Text(
+            modifier = Modifier.padding(5.dp)
+                .clickable(
+                    onClick = {
+                        navController.navigate("signup"){
+                            popUpTo("login"){inclusive=true}
+                        }
+                    }
+                ),
+            text = "Create Account",
+            color = Color.Blue,
+            style = TextStyle(
+                fontSize = 17.sp,
+            ),
+            textDecoration = TextDecoration.Underline
+        )
 
 
     }

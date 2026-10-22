@@ -1,7 +1,10 @@
 package com.example.ecomerceapp.utility
 
-import androidx.lifecycle.viewmodel.compose.viewModel
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
+import com.example.ecomerceapp.model.LoginValidationResult
 import com.example.ecomerceapp.model.SignUpValidationResult
+import com.example.ecomerceapp.uistate.LoginUiState
 import com.example.ecomerceapp.uistate.SignUpUiState
 import com.example.ecomerceapp.viewmodel.SignUpUIViewModel
 
@@ -9,7 +12,7 @@ class BasicDataCheckUtility(signUpUIViewModel: SignUpUIViewModel) {
 
 
     companion object{
-        fun checkForSignUpUIState(signUpUiState: SignUpUiState): SignUpValidationResult{
+        fun checkForSignUpUIStateInput(signUpUiState: SignUpUiState): SignUpValidationResult{
             val fullName= signUpUiState.fullName
             val phoneNumber=signUpUiState.phoneNumber
             val email=signUpUiState.email
@@ -24,26 +27,10 @@ class BasicDataCheckUtility(signUpUIViewModel: SignUpUIViewModel) {
                     message = "Please fill all the required credentials"
                 )
             }else{
-                // Regex breakdown:
-                // ^(\\+251|251|0)? -> Optional international code (+251 or 251) OR local code (0)
-                // [79]             -> The next digit must be 7 or 9 (Ethio Telecom / Safaricom mobile blocks)
-                // \\d{8}$          -> Followed by exactly 8 trailing digits
-                val phone= signUpUiState.phoneNumber
-                val cleanPhone = phone.replace("\\s|-".toRegex(), "")
-                val ethiopianPhoneRegex = "^(\\+251|251|0)?[79]\\d{8}\$".toRegex()
-                val isValidPhone= cleanPhone.matches(ethiopianPhoneRegex)
-                if(!isValidPhone){
 
-                }
-                // Regex Breakdown:
-                // (?=.*[A-Z])    -> Must contain at least one uppercase letter
-                // (?=.*[a-z])    -> Must contain at least one lowercase letter
-                // (?=.*\d)       -> Must contain at least one digit (number)
-                // (?=.*[@$!%*?&]) -> Must contain at least one special character (@, $, !, %, *, ?, or &)
-                // .{6,}          -> Must be at least 8 characters long
-                val passwordRegex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&]).{6,}\$"
-
-                val isStrongPassword=password.matches(passwordRegex.toRegex())
+                val isValidPhone= checkPhoneFormat(phoneNumber)
+                val isStrongPassword=checkPasswordStrength(password)
+                //println("phoneandpassword: $isValidPhone & $isStrongPassword")
                 val message= when{
                     !isValidPhone && !isStrongPassword ->
                         "Invalid phone number and weak password"
@@ -64,5 +51,53 @@ class BasicDataCheckUtility(signUpUIViewModel: SignUpUIViewModel) {
             }
 
         }
+        fun checkForLoginUiStateInput(loginUiState: LoginUiState): LoginValidationResult{
+            val password:String= loginUiState.password
+            val email: String= loginUiState.email
+            if(password.isEmpty() || email.isEmpty()){
+                return LoginValidationResult(
+                    isValid = false,
+                    isPasswordStrong = false,
+                    message =  "Please fill all the required credentials"
+                )
+            }else{
+                val isPasswordStrong= checkPasswordStrength(loginUiState.password)
+                val message= when{
+                    !isPasswordStrong->"Password must be Must be at least 6 characters long"+
+                            "\nMust contain at least one special character,"+
+                            "\none lowercase letter and one uppercase letter"
+                    else->null
+                }
+                return LoginValidationResult(
+                    isValid = isPasswordStrong,
+                    isPasswordStrong = isPasswordStrong,
+                    message = message
+                )
+
+            }
+        }
+        fun checkPasswordStrength(password:String): Boolean{
+            // Regex Breakdown:
+            // (?=.*[A-Z])    -> Must contain at least one uppercase letter
+            // (?=.*[a-z])    -> Must contain at least one lowercase letter
+            // (?=.*\d)       -> Must contain at least one digit (number)
+            // (?=.*[@$!%*?&]) -> Must contain at least one special character (@, $, !, %, *, ?, or &)
+            // .{6,}          -> Must be at least 8 characters long
+            val passwordRegex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&]).{6,}\$"
+            return  password.matches(passwordRegex.toRegex())
+        }
+        fun checkPhoneFormat(phoneNumber:String): Boolean{
+            // Regex breakdown:
+            // ^(\\+251|251|0)? -> Optional international code (+251 or 251) OR local code (0)
+            // [79]             -> The next digit must be 7 or 9 (Ethio Telecom / Safaricom mobile blocks)
+            // \\d{8}$          -> Followed by exactly 8 trailing digits
+            val cleanPhone = phoneNumber.replace("\\s|-".toRegex(), "")
+            val ethiopianPhoneRegex = "^(\\+251|251|0)?[79]\\d{8}\$".toRegex()
+            return  cleanPhone.matches(ethiopianPhoneRegex)
+        }
     }
+
+
+
+
 }

@@ -1,5 +1,7 @@
 package com.example.ecomerceapp.screen
 
+import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -42,7 +45,11 @@ import com.example.ecomerceapp.ui.theme.orangeGradientHorizontal
 import com.example.ecomerceapp.ui.theme.whiteBackgroundColor
 
 @Composable
-fun AuthScreen(topPadding: Dp,navController: NavController) {
+fun AuthScreen(navController: NavController) {
+    val context = LocalContext.current
+    BackHandler {
+        (context as Activity).finish()
+    }
     // 1. Load the Lottie JSON file from the raw resources directory
     val composition by rememberLottieComposition(
         LottieCompositionSpec.RawRes(R.raw.ecommerce_animation))
@@ -55,7 +62,6 @@ fun AuthScreen(topPadding: Dp,navController: NavController) {
     Column(
         modifier = Modifier
             .background(whiteBackgroundColor)
-            .padding(top = topPadding)
             .fillMaxSize()
         ,
         horizontalAlignment = Alignment.CenterHorizontally,
