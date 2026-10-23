@@ -17,7 +17,7 @@ class AuthRepository {
                 if (task.isSuccessful){
                     onResult(true,null);
                 }else{
-                    onResult(false,null);
+                    onResult(false,task.exception?.localizedMessage);
                 }
             }
     }

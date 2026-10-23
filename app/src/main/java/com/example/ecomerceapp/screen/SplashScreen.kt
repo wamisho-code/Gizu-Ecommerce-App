@@ -35,12 +35,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun SplashScreen(navController: NavController){
     ToggleSystemBars(false)
-    LaunchedEffect(Unit) {
-        delay(2000L)
-        navController.navigate("first_screen"){
-            popUpTo("splash-screen"){inclusive=true}
-        }
-    }
+
     Row (
         modifier = Modifier.fillMaxSize()
             .background(brush = orangeGradientVertical),
@@ -59,5 +54,11 @@ fun SplashScreen(navController: NavController){
             )
         )
 
+    }
+    LaunchedEffect(Unit) {
+        delay(2000L)
+        navController.navigate("first_screen"){
+            popUpTo("splash-screen"){inclusive=true}
+        }
     }
 }

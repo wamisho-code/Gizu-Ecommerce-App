@@ -8,7 +8,6 @@ import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun FirstScreen(navController: NavController) {
-    ToggleSystemBars(false)
     val auth = FirebaseAuth.getInstance()
     val user = auth.currentUser
 

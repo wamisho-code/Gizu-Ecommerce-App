@@ -1,6 +1,7 @@
 package com.example.ecomerceapp
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -14,16 +15,25 @@ import com.example.ecomerceapp.screen.SignUpScreen
 import com.example.ecomerceapp.screen.SplashScreen
 import com.example.ecomerceapp.screen.VerifyEmailScreen
 import com.example.ecomerceapp.viewmodel.AuthenticationViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun  AppNavigation() {
     val navController = rememberNavController()
     val authViewModel: AuthenticationViewModel = viewModel()
+    val startDestination = remember {
+        val user = FirebaseAuth.getInstance().currentUser
 
-    NavHost(navController, startDestination = "splash-screen") {
-        composable("splash-screen"){
-            SplashScreen(navController)
+        when {
+            user == null -> "auth"
+            !user.isEmailVerified -> "verify-email"
+            else -> "home"
         }
+    }
+
+
+    NavHost(navController, startDestination = startDestination) {
+
         composable("first_screen") {
             FirstScreen(navController)
         }

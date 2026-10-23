@@ -186,7 +186,7 @@ fun LoginScreen(navController: NavHostController
                         if(bool){
                             navController.navigate("home")
                         }else{
-                            ToastUtility.makeLongToast(context,message!!)
+                            ToastUtility.makeLongToast(context,message ?: "Login failed. Please try again.")
                         }
                     }
                 }else{

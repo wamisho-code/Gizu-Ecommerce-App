@@ -3,9 +3,8 @@
 
     <style name="Theme.EcomerceApp" parent="android:Theme.Material.Light.NoActionBar" />
     <style name="Theme.EcomSplashScreen" parent="Theme.SplashScreen">
-        <item name="android:windowIsTranslucent">true</item>
         <item name="windowSplashScreenBackground">@color/splash_background_color</item>-->
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ecommerce_logo</item>-->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/gizu_logo_svg</item>-->
         <item name="postSplashScreenTheme">@style/Theme.EcomerceApp</item>-->
     </style>
 
