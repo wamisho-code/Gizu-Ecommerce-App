@@ -5,7 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
@@ -31,18 +33,30 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.ecomerceapp.R
+import com.example.ecomerceapp.screen.main_middle_screens.CartScreen
+import com.example.ecomerceapp.screen.main_middle_screens.ListingsScreen
+import com.example.ecomerceapp.screen.main_middle_screens.NotificationScreen
+import com.example.ecomerceapp.screen.main_middle_screens.PostProductScreen
+import com.example.ecomerceapp.screen.main_middle_screens.SettingsScreen
+import com.example.ecomerceapp.screen.ui_components.BottomNavBarUI
+import com.example.ecomerceapp.screen.ui_components.TopAppBarUI
 import com.example.ecomerceapp.screen.ui_components.VectorImgCardSlide
 import com.example.ecomerceapp.ui.theme.Orange
 import com.example.ecomerceapp.ui.theme.montserrat_regular_font
 import com.example.ecomerceapp.ui.theme.orangeGradientVertical
 import com.example.ecomerceapp.ui.theme.pattaya_regular_font
 import com.example.ecomerceapp.ui.theme.whiteBackgroundColor
+import com.example.ecomerceapp.utility.ToggleSystemBars
 import com.example.ecomerceapp.viewmodel.HomeUIViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(homeUIViewModel: HomeUIViewModel= viewModel(),navController: NavController){
+    val navControllerMiddleContent = rememberNavController()
     LaunchedEffect(Unit) {
         homeUIViewModel.getUserInfo { bool, message ->
             if (!bool) {
@@ -53,83 +67,33 @@ fun HomeScreen(homeUIViewModel: HomeUIViewModel= viewModel(),navController: NavC
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .statusBarsPadding()
         ,
         topBar = {
             TopAppBarUI(homeUIViewModel,navController=navController)
+        },
+        bottomBar = {
+            BottomNavBarUI(navControllerMiddleContent)
         }
     ) { innerPadding->
-        VectorImgCardSlide(innerPadding.calculateTopPadding())
+        Spacer(modifier = Modifier.height(10.dp))
+        NavHost(navControllerMiddleContent, startDestination = "listing") {
 
-    }
-}
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TopAppBarUI(homeUIViewModel: HomeUIViewModel,navController: NavController){
-    val userDto by homeUIViewModel.userDto.collectAsStateWithLifecycle()
-    TopAppBar(
-        title = {
-            Column (
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-
-            ) {
-                Text(
-                    color = Color.Transparent,
-                    text = "Gizu",
-                    style = TextStyle(
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = pattaya_regular_font,
-                        brush = orangeGradientVertical
-                    )
-                )
-                Text(
-                    color = Color.Transparent,
-                    text = "Shop with pennies",
-                    style = TextStyle(
-                        fontSize = 7.sp,
-                        fontStyle = FontStyle.Italic,
-                        fontFamily = montserrat_regular_font,
-                        brush = orangeGradientVertical
-                    )
-                )
-
+            composable("listing"){
+                ListingsScreen(innerPadding.calculateTopPadding())
             }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = whiteBackgroundColor
-        ),
-        actions = {
-            Box(
-                modifier = Modifier
-                    .size(30.dp)
-                    .background(
-                        brush = orangeGradientVertical,
-                        shape = CircleShape
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = userDto.fullName?.firstOrNull()?.toString() ?: "",
-                    color = Color.White
-                )
+            composable("post-product"){
+                PostProductScreen()
             }
-            IconButton(
-                onClick = {
-                    homeUIViewModel.logout()
-                    navController.navigate("auth")
-                }
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.logout_icon),
-                    tint = Orange,
-                    contentDescription = null
-
-                )
+            composable("notification"){
+                NotificationScreen()
             }
-
+            composable("settings"){
+                SettingsScreen()
+            }
+            composable("cart"){
+                CartScreen()
+            }
         }
 
-    )
+    }
 }

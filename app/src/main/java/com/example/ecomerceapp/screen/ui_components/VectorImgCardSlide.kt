@@ -35,7 +35,7 @@ import com.example.ecomerceapp.utility.SlideCardUtility
 import kotlinx.coroutines.delay
 
 @Composable
-fun VectorImgCardSlide(topPad: Dp) {
+fun VectorImgCardSlide() {
 
 
     val pagerState = rememberPagerState {
@@ -57,9 +57,8 @@ fun VectorImgCardSlide(topPad: Dp) {
         state = pagerState,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top =topPad)
             .height(140.dp),
-        pageSpacing = 12.dp,
+        pageSpacing = 16.dp,
         contentPadding = PaddingValues(horizontal = 16.dp)
     ) { page ->
 

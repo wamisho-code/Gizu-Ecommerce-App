@@ -8,12 +8,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.ecomerceapp.screen.AuthScreen
-import com.example.ecomerceapp.screen.FirstScreen
 import com.example.ecomerceapp.screen.HomeScreen
 import com.example.ecomerceapp.screen.LoginScreen
 import com.example.ecomerceapp.screen.SignUpScreen
 import com.example.ecomerceapp.screen.SplashScreen
 import com.example.ecomerceapp.screen.VerifyEmailScreen
+import com.example.ecomerceapp.utility.ToggleSystemBars
 import com.example.ecomerceapp.viewmodel.AuthenticationViewModel
 import com.google.firebase.auth.FirebaseAuth
 
@@ -34,9 +34,6 @@ fun  AppNavigation() {
 
     NavHost(navController, startDestination = startDestination) {
 
-        composable("first_screen") {
-            FirstScreen(navController)
-        }
         composable("auth"){
             AuthScreen(navController)
         }
