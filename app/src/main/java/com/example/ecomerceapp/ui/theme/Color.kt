@@ -14,7 +14,7 @@ val gradientColors_blue_cyan = listOf(Color(0xFF2196F3), Color(0xFF00BCD4)) // B
 val blueGradientVertical = Brush.verticalGradient(colors = gradientColors_blue_cyan)
 val blueGradientHorizontal = Brush.horizontalGradient(colors = gradientColors_blue_cyan)
 val Orange= Color(0xFFF88127)
-val Blue= Color(0xFF0749BB)
+val Blue= Color(0xFF2A73F1)
 val Crimson= Color(0xFFF36481)
 val whiteBackgroundColor= Color(0xFFF8F9FA)
 val gradientColors_orange_crimson = listOf(Color(0xFFF88127), Color(0xFFF36481)) // orange to crimson

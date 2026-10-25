@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.ecomerceapp.screen.AuthScreen
 import com.example.ecomerceapp.screen.HomeScreen
 import com.example.ecomerceapp.screen.LoginScreen
+import com.example.ecomerceapp.screen.SearchScreen
 import com.example.ecomerceapp.screen.SignUpScreen
 import com.example.ecomerceapp.screen.SplashScreen
 import com.example.ecomerceapp.screen.VerifyEmailScreen
@@ -33,6 +34,9 @@ fun  AppNavigation() {
 
 
     NavHost(navController, startDestination = startDestination) {
+        composable("search-screen"){
+            SearchScreen()
+        }
 
         composable("auth"){
             AuthScreen(navController)

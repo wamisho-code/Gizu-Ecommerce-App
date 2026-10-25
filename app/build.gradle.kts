@@ -41,6 +41,10 @@ android {
 }
 
 dependencies {
+    implementation("androidx.room:room-runtime:2.8.5")
+    implementation(libs.androidx.compose.runtime.livedata)
+    annotationProcessor("androidx.room:room-compiler:2.8.5")
+
 
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("com.airbnb.android:lottie-compose:6.7.1")

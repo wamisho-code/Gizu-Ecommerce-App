@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.ecomerceapp.R
+import com.example.ecomerceapp.screen.SearchScreen
 import com.example.ecomerceapp.ui.theme.Orange
 import com.example.ecomerceapp.ui.theme.montserrat_regular_font
 import com.example.ecomerceapp.ui.theme.orangeGradientVertical
@@ -78,7 +79,7 @@ fun TopAppBarUI(homeUIViewModel: HomeUIViewModel,navController: NavController){
         actions = {
             IconButton(
                 onClick = {
-
+                    navController.navigate("search-screen")
                 }
             ) {
                 Icon(
