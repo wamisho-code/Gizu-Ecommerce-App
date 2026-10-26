@@ -17,7 +17,7 @@ import com.example.ecomerceapp.model.BottomNavItemModel
 
 class BottomNavItems {
     companion object{
-        val bottomNavItems= listOf<BottomNavItemModel>(
+        val bottomNavItems= listOf<BottomNavItemModel?>(
             BottomNavItemModel(
                 title = "Home",
                 selectedIcon = Icons.Filled.Home,
@@ -33,19 +33,13 @@ class BottomNavItems {
                 route = "cart"
             ),
 //
-//            BottomNavItemModel(
-//                title = "Post",
-//                selectedIcon = Icons.Filled.AddCircle,
-//                unselectedIcon = Icons.Outlined.AddCircle,
-//                badgeNumber = 0,
-//                route = "post-product"
-//            ),
+            null,
             BottomNavItemModel(
-                title = "Notification",
+                title = "Updates",
                 selectedIcon = Icons.Filled.Notifications,
                 unselectedIcon = Icons.Outlined.Notifications,
                 badgeNumber = 89,
-                route = "notification"
+                route = "updates"
             ),
             BottomNavItemModel(
                 title = "Settings",

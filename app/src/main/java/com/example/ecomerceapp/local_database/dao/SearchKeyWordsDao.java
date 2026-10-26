@@ -16,4 +16,6 @@ public interface SearchKeyWordsDao {
             "ORDER BY CASE WHEN LOWER(word) = LOWER(:query) THEN 0 ELSE 1 END, " +
             "search_count DESC, word ASC LIMIT 10")
     LiveData<List<SearchKeyWords>> getSuggestedKeys(String query);
+
+
 }

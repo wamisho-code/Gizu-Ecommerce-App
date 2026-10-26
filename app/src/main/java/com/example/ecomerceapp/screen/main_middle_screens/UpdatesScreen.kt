@@ -12,7 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import com.example.ecomerceapp.ui.theme.michroma_regular_font
 
 @Composable
-fun NotificationScreen(){
+fun UpdatesScreen(){
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

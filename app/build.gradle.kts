@@ -41,6 +41,8 @@ android {
 }
 
 dependencies {
+    implementation("io.coil-kt.coil3:coil-compose:3.3.0")
+
     implementation("androidx.room:room-runtime:2.8.5")
     implementation(libs.androidx.compose.runtime.livedata)
     annotationProcessor("androidx.room:room-compiler:2.8.5")
