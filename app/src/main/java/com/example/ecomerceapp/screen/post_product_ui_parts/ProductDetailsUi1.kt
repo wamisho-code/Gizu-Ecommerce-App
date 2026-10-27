@@ -3,10 +3,6 @@ package com.example.ecomerceapp.screen.post_product_ui_parts
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -21,14 +17,17 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ecomerceapp.model.enums.ProductCategory
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.ecomerceapp.model.product_models.enums.ProductCategory
 import com.example.ecomerceapp.screen.post_product_ui_parts.sub_ui_components.SearchableCategoryDropdown
 import com.example.ecomerceapp.ui.theme.Orange
 import com.example.ecomerceapp.uistate.PostProductUiState
 import com.example.ecomerceapp.viewmodel.PostProductViewModel
 
 @Composable
-fun ProductDetailsUi1(uiState: PostProductUiState,viewModel: PostProductViewModel){
+fun ProductDetailsUi1(uiState: PostProductUiState,
+                      viewModel: PostProductViewModel, ){
+    val errorStatus by viewModel.inputStatusForFirstPart.collectAsStateWithLifecycle()
     var selectedCategory by remember {
         mutableStateOf<ProductCategory?>(null)
     }
@@ -39,10 +38,14 @@ fun ProductDetailsUi1(uiState: PostProductUiState,viewModel: PostProductViewMode
         onValueChange = {
             viewModel.setProductName(it)
         },
-        label = {Text(
-            "Product Name",
-            fontStyle = FontStyle.Italic
-        )},
+        isError = !errorStatus.isNameValid,
+        label = {
+            Text(
+                text = "Product Name",
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp
+            )
+        },
         maxLines = 1,
         singleLine = true,
         placeholder = {
@@ -53,21 +56,25 @@ fun ProductDetailsUi1(uiState: PostProductUiState,viewModel: PostProductViewMode
         },
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = Orange,
+            focusedLabelColor = Color.Black
         ),
     )
     // product desc
-    Spacer(modifier = Modifier.height(10.dp))
+    Spacer(modifier = Modifier.height(15.dp))
     OutlinedTextField(
 
         modifier = Modifier.fillMaxWidth()
-            .height(120.dp),
+            .height(140.dp),
         value = uiState.description,
         onValueChange = {
             viewModel.setDescription(it)
         },
-        label = {Text(
-            "Description",
-            fontStyle = FontStyle.Italic
+        isError = !errorStatus.isDescriptionValid,
+        label = {
+            Text(
+            text = "Product Description",
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp
         )},
         placeholder = {
             Text(
@@ -77,13 +84,17 @@ fun ProductDetailsUi1(uiState: PostProductUiState,viewModel: PostProductViewMode
         },
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = Orange,
+            focusedLabelColor = Color.Black
         ),
     )
-    Spacer(modifier = Modifier.height(15.dp))
+    Spacer(modifier = Modifier.height(20.dp))
     SearchableCategoryDropdown(
         selectedCategory = selectedCategory,
         onCategorySelected = { category ->
             selectedCategory = category
-        })
+            viewModel.setCategory(category.name)
+        },
+        errorStatus = errorStatus
+        )
 
 }

@@ -1,4 +1,4 @@
-package com.example.ecomerceapp.model
+package com.example.ecomerceapp.model.user_models
 
 data class UserModel(
     val userId:String?,

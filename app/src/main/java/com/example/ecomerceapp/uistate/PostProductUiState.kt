@@ -10,8 +10,8 @@ data class PostProductUiState(
     val attributeKey: String= "",
     val attributeValue: String="",
     val selectedImages: List<Uri> = emptyList(),
-    val price: Double=0.0,
-    val quantity: Int=1,
+    val price: String="",
+    val quantity: String="",
     val condition: String= "NEW",
     val isLoading: Boolean =false
 

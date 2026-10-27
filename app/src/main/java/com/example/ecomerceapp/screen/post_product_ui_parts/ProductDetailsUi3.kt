@@ -1,14 +1,19 @@
 package com.example.ecomerceapp.screen.post_product_ui_parts
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -25,12 +30,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.example.ecomerceapp.R
 import com.example.ecomerceapp.ui.theme.Orange
 import com.example.ecomerceapp.uistate.PostProductUiState
 import com.example.ecomerceapp.viewmodel.PostProductViewModel
@@ -39,8 +52,17 @@ import com.example.ecomerceapp.viewmodel.PostProductViewModel
 @Composable
 fun ProductDetailsUi3(uiState: PostProductUiState,viewModel: PostProductViewModel){
     val context= LocalContext.current
+    val errorStatus by viewModel.inputStatusForThirdPart.collectAsStateWithLifecycle()
     val conditionList =listOf<String>("New","Old")
     var expanded by remember { mutableStateOf(false) }
+    val composition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(R.raw.loading_animation))
+
+    // 2. Control the animation state (autoplay and loop infinitely)
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever
+    )
     Text(
         text = "Price",
         fontSize =18.sp,
@@ -49,11 +71,10 @@ fun ProductDetailsUi3(uiState: PostProductUiState,viewModel: PostProductViewMode
     Spacer(modifier = Modifier.height(10.dp))
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
-        value = uiState.price.toString(),
+        value = uiState.price,
+        isError = !errorStatus.isPriceValid,
         onValueChange = {
-            if (it.isEmpty() || it.toDoubleOrNull() != null) {
-                viewModel.setPrice(it.toDoubleOrNull() ?: 0.0)
-            }
+                viewModel.setPrice(it,context)
         },
         label = null,
         keyboardOptions = KeyboardOptions(
@@ -73,7 +94,7 @@ fun ProductDetailsUi3(uiState: PostProductUiState,viewModel: PostProductViewMode
     Spacer(modifier = Modifier.height(15.dp))
 
     Text(
-        text = "Quantity",
+        text = "Quantity in stock",
         fontSize =18.sp,
         fontWeight = FontWeight.Bold
     )
@@ -81,11 +102,11 @@ fun ProductDetailsUi3(uiState: PostProductUiState,viewModel: PostProductViewMode
     OutlinedTextField(
         label = null,
         modifier = Modifier.fillMaxWidth(),
-        value = uiState.quantity.toString(),
+        isError = !errorStatus.isQuantityValid,
+        value = uiState.quantity,
         onValueChange = {
             viewModel.setQuantity(it,context)
         },
-        placeholder = {Text("1")},
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number
         ),
@@ -144,5 +165,21 @@ fun ProductDetailsUi3(uiState: PostProductUiState,viewModel: PostProductViewMode
                 Spacer(modifier = Modifier.height(3.dp))
             }
         }
+    }
+    Spacer(modifier = Modifier.height(60.dp))
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        if (uiState.isLoading){
+                LottieAnimation(
+                    modifier = Modifier.fillMaxSize(),
+                    composition=composition,
+                    contentScale = ContentScale.Crop,
+                    progress = progress
+                )
+            }
     }
 }

@@ -1,9 +1,13 @@
 package com.example.ecomerceapp.viewmodel
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import com.example.ecomerceapp.model.input_validation_models.PostProductFirstPartValidationResult
+import com.example.ecomerceapp.model.input_validation_models.PostProductThirdPartValidationResult
 import com.example.ecomerceapp.uistate.PostProductUiState
+import com.example.ecomerceapp.utility.BasicDataCheckUtility
 import com.example.ecomerceapp.utility.ToastUtility
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,6 +15,23 @@ import kotlinx.coroutines.flow.update
 
 class PostProductViewModel: ViewModel() {
     private val  _uiState= MutableStateFlow(PostProductUiState())
+    private val _isImageSelected= MutableStateFlow(true)
+    val isImageSelected= _isImageSelected.asStateFlow()
+
+    private val _inputStatusForFirstPart = MutableStateFlow(
+        PostProductFirstPartValidationResult(
+            true,true,true,false
+        )
+    )
+    val inputStatusForFirstPart = _inputStatusForFirstPart.asStateFlow()
+
+    private val _inputStatusForThirdPart = MutableStateFlow(
+        PostProductThirdPartValidationResult(
+            true,true,true
+        )
+    )
+    val inputStatusForThirdPart = _inputStatusForThirdPart.asStateFlow()
+
     val uiState= _uiState.asStateFlow()
     fun setProductName(name:String){
         _uiState.update {
@@ -22,6 +43,13 @@ class PostProductViewModel: ViewModel() {
             it.copy(description = desc)
         }
     }
+
+    fun setCategory(category: String) {
+        _uiState.update {
+            it.copy(category = category)
+        }
+    }
+
     fun setAttributeKey(key:String){
         _uiState.update {
             it.copy(attributeKey = key)
@@ -90,14 +118,18 @@ class PostProductViewModel: ViewModel() {
         }
     }
     fun setImages(uris: List<Uri>){
+
         //only holds five images
         _uiState.update { state ->
             val remainingSlot= 5 - state.selectedImages.size
             val newImages= uris.take(remainingSlot)
+
             state.copy(
                 selectedImages = state.selectedImages + newImages
             )
+
         }
+        _isImageSelected.value=_uiState.value.selectedImages.isNotEmpty()
 
     }
     fun removeImage(uri:Uri){
@@ -106,11 +138,15 @@ class PostProductViewModel: ViewModel() {
                 selectedImages = it.selectedImages - uri
             )
         }
+        _isImageSelected.value=_uiState.value.selectedImages.isNotEmpty()
     }
-    fun setPrice(price: Double){
+    fun setPrice(price: String,context: Context){
+        val p= price.trim()
+        if(p=="0")
+            ToastUtility.makeLongToast(context,"Quantity can't be zero")
         _uiState.update {
             it.copy(
-                price = price
+                price = p
             )
         }
     }
@@ -119,26 +155,40 @@ class PostProductViewModel: ViewModel() {
             it.copy(condition = condition)
         }
     }
-    fun setQuantity(quantity:String,context: Context){
-        if(quantity.isEmpty()){
+    fun setQuantity(quantity:String, context: Context){
+        val quan=quantity.trim()
+        if(quan=="0")
+            ToastUtility.makeLongToast(context,"Quantity can't be zero")
             _uiState.update {
-                it.copy(quantity = 1)
+                it.copy(quantity =quan)
             }
-        }else{
-        try {
-            val quan= if(quantity.toInt()>0)quantity.toInt() else 1
-            _uiState.update {
-                it.copy(quantity = quan)
-            }
-        }catch (e: Exception){
-            _uiState.update {
-                it.copy(quantity = 1)
-            }
-            ToastUtility.makeLongToast(context,"Insert Valid Quantity value")
-        }
-        }
-
     }
+    fun changeErrorStatusForFirstPart(postProductUiState: PostProductUiState): Boolean{
+        _inputStatusForFirstPart.value= BasicDataCheckUtility
+            .checkForPostProductUiStateFirstPart(postProductUiState)
+        return _inputStatusForFirstPart.value.areAllValid
+    }
+    fun  changeErrorStatusForSecondPart(postProductUiState: PostProductUiState): Boolean{
+        _isImageSelected.value =!postProductUiState.selectedImages.isEmpty()
+        return _isImageSelected.value
+    }
+
+    fun changeErrorStatusForThirdPart(postProductUiState: PostProductUiState): Boolean{
+        _inputStatusForThirdPart.value= BasicDataCheckUtility
+            .checkForPostProductUiStateThirdPart(postProductUiState)
+        return _inputStatusForThirdPart.value.areAllValid
+    }
+    fun showProgress(){
+        _uiState.update {
+            it.copy(isLoading = true)
+        }
+    }
+    fun hideProgressBar(){
+        _uiState.update {
+            it.copy(isLoading = false)
+        }
+    }
+
 
 
 }

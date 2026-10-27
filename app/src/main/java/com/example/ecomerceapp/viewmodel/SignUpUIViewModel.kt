@@ -1,7 +1,7 @@
 package com.example.ecomerceapp.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.example.ecomerceapp.model.SignUpValidationResult
+import com.example.ecomerceapp.model.input_validation_models.SignUpValidationResult
 import com.example.ecomerceapp.uistate.SignUpUiState
 import com.example.ecomerceapp.utility.BasicDataCheckUtility
 import kotlinx.coroutines.flow.MutableStateFlow

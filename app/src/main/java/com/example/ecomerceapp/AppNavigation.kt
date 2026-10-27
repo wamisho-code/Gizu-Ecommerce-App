@@ -2,20 +2,17 @@ package com.example.ecomerceapp
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.ecomerceapp.screen.AuthScreen
+import com.example.ecomerceapp.screen.authentication_screens.AuthScreen
 import com.example.ecomerceapp.screen.HomeScreen
-import com.example.ecomerceapp.screen.LoginScreen
-import com.example.ecomerceapp.screen.SearchScreen
-import com.example.ecomerceapp.screen.SignUpScreen
-import com.example.ecomerceapp.screen.SplashScreen
-import com.example.ecomerceapp.screen.VerifyEmailScreen
-import com.example.ecomerceapp.utility.ToggleSystemBars
-import com.example.ecomerceapp.viewmodel.AuthenticationViewModel
+import com.example.ecomerceapp.screen.authentication_screens.LoginScreen
+import com.example.ecomerceapp.screen.search_screen.SearchScreen
+import com.example.ecomerceapp.screen.authentication_screens.SignUpScreen
+import com.example.ecomerceapp.screen.authentication_screens.VerifyEmailScreen
+import com.example.ecomerceapp.viewmodel.authentication_viewmodels.AuthenticationViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable

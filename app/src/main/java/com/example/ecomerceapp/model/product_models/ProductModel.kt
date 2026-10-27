@@ -1,6 +1,6 @@
-package com.example.ecomerceapp.model
+package com.example.ecomerceapp.model.product_models
 
-import com.example.ecomerceapp.model.enums.ProductCondition
+import com.example.ecomerceapp.model.product_models.enums.ProductCondition
 import com.google.firebase.Timestamp
 
 data class ProductModel(
@@ -11,7 +11,7 @@ data class ProductModel(
     val attributes: Map<String,String> = emptyMap(),
     val productImages: List<ProductImageModel> = emptyList(),
     val price: Double=0.0,
-    val quantity: Int=0,
-    val condition: ProductCondition= ProductCondition.NEW,
+    val quantity: Int=1,
+    val condition: ProductCondition = ProductCondition.NEW,
     val createdAt: Timestamp? = null
 )

@@ -1,6 +1,5 @@
-package com.example.ecomerceapp.model
+package com.example.ecomerceapp.model.home_screen_models
 
-import androidx.compose.material.icons.Icons
 import androidx.compose.ui.graphics.vector.ImageVector
 
 data class BottomNavItemModel(

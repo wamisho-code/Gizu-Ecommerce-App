@@ -1,6 +1,7 @@
 package com.example.ecomerceapp.screen.post_product_ui_parts.sub_ui_components
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -16,7 +17,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.ecomerceapp.model.enums.ProductCategory
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.ecomerceapp.model.input_validation_models.PostProductFirstPartValidationResult
+import com.example.ecomerceapp.model.product_models.enums.ProductCategory
 import com.example.ecomerceapp.ui.theme.Orange
 
 
@@ -24,15 +29,18 @@ import com.example.ecomerceapp.ui.theme.Orange
 @Composable
 fun SearchableCategoryDropdown(
     selectedCategory: ProductCategory?,
-    onCategorySelected: (ProductCategory) -> Unit
+    onCategorySelected: (ProductCategory) -> Unit,
+    errorStatus: PostProductFirstPartValidationResult
 ) {
     var expanded by remember { mutableStateOf(false) }
     var searchText by remember {
         mutableStateOf(selectedCategory?.displayName ?: "")
     }
 
-    val filteredCategories = ProductCategory.entries.filter {
-        it.displayName.contains(searchText, ignoreCase = true)
+    val filteredCategories = remember(searchText) {
+        ProductCategory.entries.filter {
+            it.displayName.contains(searchText, ignoreCase = true)
+        }
     }
 
     ExposedDropdownMenuBox(
@@ -45,10 +53,15 @@ fun SearchableCategoryDropdown(
                 searchText = it
                 expanded = true
             },
+            isError = !errorStatus.isCategorySelected,
             modifier = Modifier
                 .fillMaxWidth()
                 .menuAnchor(MenuAnchorType.PrimaryEditable),
-            label = { Text("Product category") },
+            label = { Text(
+                text = "Product Category",
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp
+            ) },
             placeholder = { Text("Search category...") },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = Orange,
@@ -64,6 +77,7 @@ fun SearchableCategoryDropdown(
 
         ExposedDropdownMenu(
             expanded = expanded,
+            modifier = Modifier.height(250.dp),
             onDismissRequest = { expanded = false }
         ) {
             filteredCategories.forEach { category ->

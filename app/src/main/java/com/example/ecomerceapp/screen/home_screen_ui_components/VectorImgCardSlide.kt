@@ -1,4 +1,4 @@
-package com.example.ecomerceapp.screen.ui_components
+package com.example.ecomerceapp.screen.home_screen_ui_components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,13 +24,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ecomerceapp.ui.theme.Crimson
-import com.example.ecomerceapp.ui.theme.Orange
 import com.example.ecomerceapp.ui.theme.montserrat_regular_font
-import com.example.ecomerceapp.ui.theme.orangeGradientVertical
 import com.example.ecomerceapp.utility.SlideCardUtility
 import kotlinx.coroutines.delay
 

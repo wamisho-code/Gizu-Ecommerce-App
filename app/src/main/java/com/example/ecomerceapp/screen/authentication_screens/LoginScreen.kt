@@ -1,6 +1,5 @@
-package com.example.ecomerceapp.screen
+package com.example.ecomerceapp.screen.authentication_screens
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,13 +32,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -58,24 +55,21 @@ import com.example.ecomerceapp.ui.theme.montserrat_regular_font
 import com.example.ecomerceapp.ui.theme.orangeGradientHorizontal
 import com.example.ecomerceapp.ui.theme.whiteBackgroundColor
 import com.example.ecomerceapp.utility.ToastUtility
-import com.example.ecomerceapp.viewmodel.AuthenticationViewModel
-import com.example.ecomerceapp.viewmodel.SignUpUIViewModel
+import com.example.ecomerceapp.viewmodel.authentication_viewmodels.AuthenticationViewModel
+import com.example.ecomerceapp.viewmodel.LoginUIViewModel
 
 @Composable
-fun SignUpScreen(navController: NavHostController,
-                 viewModel: SignUpUIViewModel= viewModel(),
-                 authenticationViewModel: AuthenticationViewModel
+fun LoginScreen(navController: NavHostController
+                ,viewModel: LoginUIViewModel=viewModel(),
+                authenticationViewModel: AuthenticationViewModel= viewModel()
 ) {
-    var context= LocalContext.current
+    val context = LocalContext.current
+    val uiState by viewModel.loginUiState.collectAsStateWithLifecycle()
     var showPassword by remember {
         mutableStateOf(false)
     }
-    val uiState by viewModel.signUpUiState.collectAsStateWithLifecycle()
-    val isPasswordStrong by viewModel.isPasswordStrong.collectAsStateWithLifecycle()
-    val isPhoneValid by viewModel.isPhoneValid.collectAsStateWithLifecycle()
-
     val composition by rememberLottieComposition(
-        LottieCompositionSpec.RawRes(R.raw.lottie_signin_two_people_animation))
+        LottieCompositionSpec.RawRes(R.raw.login_boy_animation))
 
     // 2. Control the animation state (autoplay and loop infinitely)
     val progress by animateLottieCompositionAsState(
@@ -97,54 +91,23 @@ fun SignUpScreen(navController: NavHostController,
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(
-            text = "Create Account!",
+            text = "Welcome back!",
             style =  TextStyle(
                 fontFamily = montserrat_bold_font,
-                fontSize = 22.sp
+                fontSize = 24.sp
             ),
             textAlign = TextAlign.Center
 
         )
         Spacer(modifier = Modifier.height(10.dp))
-
-        OutlinedTextField(
-            value = uiState.fullName,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                focusedIndicatorColor = Orange,
-                focusedLabelColor = Crimson
+        Text(
+            text = "Login in to your existing Account",
+            style =  TextStyle(
+                fontFamily = montserrat_bold_font,
+                fontSize = 20.sp
             ),
-            onValueChange = {
-                viewModel.setFulName(it)
-            },
-            label = {
-                Text("Full name", fontFamily = montserrat_regular_font)
-            },
-        )
-        Spacer(modifier = Modifier.height(10.dp))
+            textAlign = TextAlign.Center
 
-        OutlinedTextField(
-            value = uiState.phoneNumber,
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.White,
-                unfocusedContainerColor = Color.White,
-                focusedIndicatorColor = Orange,
-                focusedLabelColor = Crimson
-            ),
-            onValueChange = {
-                viewModel.setPhone(it)
-            },
-            isError = !isPhoneValid,
-            placeholder = {
-                Text("09-XX-XX-XX-XX", fontFamily = montserrat_regular_font)
-            },
-            label = {
-                Text("Phone number", fontFamily = montserrat_regular_font)
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Phone
-            )
         )
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -176,7 +139,6 @@ fun SignUpScreen(navController: NavHostController,
                 focusedIndicatorColor = Orange,
                 focusedLabelColor = Crimson
             ),
-            isError = !isPasswordStrong,
             onValueChange = {
                 viewModel.setPassword(it)
             },
@@ -187,8 +149,8 @@ fun SignUpScreen(navController: NavHostController,
             trailingIcon = {
                 val showIcon=  if(showPassword==false)
                     painterResource(R.drawable.eye_show_icon)
-                    else
-                        painterResource(R.drawable.eye_hide_icon)
+                else
+                    painterResource(R.drawable.eye_hide_icon)
                 IconButton(
                     onClick = {
                         showPassword= !showPassword
@@ -213,29 +175,22 @@ fun SignUpScreen(navController: NavHostController,
         Spacer(modifier = Modifier.height(20.dp))
         Button(
             onClick = {
-
-                val validatedInput= viewModel.validateSignUp()
-                if(validatedInput.message ==null){
-
-                    if(validatedInput.isValid){
-                        viewModel.setIsLoadingTrue()
-                        authenticationViewModel.signUp(uiState) { success, message ->
-                            viewModel.setIsLoadingFasle()
-                            if (success) {
-                                navController.navigate("verify-email")
-                            } else if(message==null) {
-                                ToastUtility.makeLongToast(context,"Account exists verify Email")
-                                navController.navigate("verify-email")
-                            }else{
-                                ToastUtility.makeLongToast(context,message!!)
-                            }
+                val message= viewModel.validateInput(uiState)
+                if (message==null){
+                    viewModel.isLoadingTrue()
+                    authenticationViewModel.login(loginUiState = uiState){bool,message->
+                        viewModel.isLoadingFalse()
+                        if(bool){
+                            navController.navigate("home")
+                        }else{
+                            ToastUtility.makeLongToast(context,message ?: "Login failed. Please try again.")
                         }
                     }
-
                 }else{
-                    viewModel.setIsLoadingFasle()
-                    ToastUtility.makeLongToast(context,validatedInput.message)
+                    ToastUtility.makeLongToast(context,message)
                 }
+
+
             },
             modifier = Modifier.width(160.dp)
                 .clip(RoundedCornerShape(30.dp))
@@ -245,7 +200,7 @@ fun SignUpScreen(navController: NavHostController,
             )
         ) {
             Text(
-                text = "Create",
+                text = "Login",
                 fontFamily = montserrat_bold_font,
                 fontSize = 18.sp
             )
@@ -255,12 +210,12 @@ fun SignUpScreen(navController: NavHostController,
             modifier = Modifier.padding(5.dp)
                 .clickable(
                     onClick = {
-                        navController.navigate("login"){
-                            popUpTo("signup"){inclusive=true}
+                        navController.navigate("signup"){
+                            popUpTo("login"){inclusive=true}
                         }
                     }
                 ),
-            text = "Already have account",
+            text = "Create Account",
             color = Color.Blue,
             style = TextStyle(
                 fontSize = 17.sp,
@@ -269,7 +224,7 @@ fun SignUpScreen(navController: NavHostController,
         )
 
 
-
-
     }
+
 }
+

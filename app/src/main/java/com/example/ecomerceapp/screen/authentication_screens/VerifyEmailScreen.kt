@@ -1,7 +1,5 @@
-package com.example.ecomerceapp.screen
+package com.example.ecomerceapp.screen.authentication_screens
 
-import android.widget.Button
-import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,20 +18,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.ecomerceapp.ui.theme.Blue
 import com.example.ecomerceapp.ui.theme.montserrat_regular_font
 import com.example.ecomerceapp.utility.ToastUtility
-import com.example.ecomerceapp.viewmodel.AuthenticationViewModel
+import com.example.ecomerceapp.viewmodel.authentication_viewmodels.AuthenticationViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 

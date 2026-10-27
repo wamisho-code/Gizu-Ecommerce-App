@@ -1,10 +1,12 @@
 package com.example.ecomerceapp.utility
 
-import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
-import com.example.ecomerceapp.model.LoginValidationResult
-import com.example.ecomerceapp.model.SignUpValidationResult
+import android.net.Uri
+import com.example.ecomerceapp.model.input_validation_models.LoginValidationResult
+import com.example.ecomerceapp.model.input_validation_models.PostProductFirstPartValidationResult
+import com.example.ecomerceapp.model.input_validation_models.PostProductThirdPartValidationResult
+import com.example.ecomerceapp.model.input_validation_models.SignUpValidationResult
 import com.example.ecomerceapp.uistate.LoginUiState
+import com.example.ecomerceapp.uistate.PostProductUiState
 import com.example.ecomerceapp.uistate.SignUpUiState
 import com.example.ecomerceapp.viewmodel.SignUpUIViewModel
 
@@ -94,6 +96,42 @@ class BasicDataCheckUtility(signUpUIViewModel: SignUpUIViewModel) {
             val cleanPhone = phoneNumber.replace("\\s|-".toRegex(), "")
             val ethiopianPhoneRegex = "^(\\+251|251|0)?[79]\\d{8}\$".toRegex()
             return  cleanPhone.matches(ethiopianPhoneRegex)
+        }
+        fun checkForPostProductUiStateFirstPart(
+            postProductUiState: PostProductUiState
+        ): PostProductFirstPartValidationResult {
+
+            val name = postProductUiState.name
+            val description = postProductUiState.description
+            val category = postProductUiState.category
+
+            val isNameValid = name.isNotEmpty()
+            val isDescriptionValid = description.isNotEmpty()
+            val isCategorySelected = category.isNotEmpty()
+
+            return PostProductFirstPartValidationResult(
+                isNameValid = isNameValid,
+                isDescriptionValid = isDescriptionValid,
+                isCategorySelected = isCategorySelected,
+                areAllValid = isNameValid &&
+                        isDescriptionValid &&
+                        isCategorySelected
+            )
+        }
+        fun checkForPostProductUiStateSecondPart(images: List<Uri>): Boolean{
+            return !images.isEmpty()
+        }
+        fun checkForPostProductUiStateThirdPart(postProductUiState: PostProductUiState)
+        : PostProductThirdPartValidationResult{
+            val price = postProductUiState.price
+            val quantity= postProductUiState.quantity
+            val isPriceValid= if(price.isEmpty())false else price.toDouble() > 0
+            val isQuantityValid=  if(quantity.isEmpty()) false else quantity.toInt() >0
+            return PostProductThirdPartValidationResult(
+                isPriceValid = isPriceValid,
+                isQuantityValid = isQuantityValid,
+                areAllValid =  isPriceValid && isQuantityValid
+            )
         }
     }
 

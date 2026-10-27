@@ -81,6 +81,7 @@ fun PostProductScreen(viewModel: PostProductViewModel= viewModel(),innerPadding:
         Spacer(modifier = Modifier.height(15.dp))
         HorizontalPager(
             state = pagerSate,
+            userScrollEnabled = false,
             modifier = Modifier.weight(1f)
         ) { page->
             Column(
@@ -93,8 +94,12 @@ fun PostProductScreen(viewModel: PostProductViewModel= viewModel(),innerPadding:
                     2 -> ProductDetailsUi3(uiState,viewModel)
 
                 }
-                Spacer(modifier = Modifier.height(80.dp))
-                PostProductPagerButtons(pagerSate,pageCount)
+                if(pagerSate.currentPage  in 0..1)
+                    Spacer(modifier = Modifier.height(80.dp))
+                else
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                PostProductPagerButtons(pagerSate,pageCount,viewModel,uiState)
             }
 
         }

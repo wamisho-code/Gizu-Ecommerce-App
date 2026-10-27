@@ -1,6 +1,6 @@
 package com.example.ecomerceapp.repository
 
-import com.example.ecomerceapp.model.UserDto
+import com.example.ecomerceapp.model.user_models.UserDto
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 

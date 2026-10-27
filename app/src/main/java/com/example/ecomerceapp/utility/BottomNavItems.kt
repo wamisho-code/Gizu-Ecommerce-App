@@ -13,7 +13,7 @@ import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.ShoppingCart
-import com.example.ecomerceapp.model.BottomNavItemModel
+import com.example.ecomerceapp.model.home_screen_models.BottomNavItemModel
 
 class BottomNavItems {
     companion object{

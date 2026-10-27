@@ -1,7 +1,7 @@
 package com.example.ecomerceapp.utility
 
 import com.example.ecomerceapp.R
-import com.example.ecomerceapp.model.SlideCardItem
+import com.example.ecomerceapp.model.home_screen_models.SlideCardItem
 
 class SlideCardUtility {
     companion object{

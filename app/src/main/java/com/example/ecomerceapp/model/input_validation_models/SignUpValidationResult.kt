@@ -1,4 +1,4 @@
-package com.example.ecomerceapp.model
+package com.example.ecomerceapp.model.input_validation_models
 
 data class SignUpValidationResult(
     val isPhoneValid: Boolean,

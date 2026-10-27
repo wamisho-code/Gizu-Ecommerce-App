@@ -19,8 +19,8 @@ import com.example.ecomerceapp.screen.main_middle_screens.ListingsScreen
 import com.example.ecomerceapp.screen.main_middle_screens.PostProductScreen
 import com.example.ecomerceapp.screen.main_middle_screens.SettingsScreen
 import com.example.ecomerceapp.screen.main_middle_screens.UpdatesScreen
-import com.example.ecomerceapp.screen.ui_components.BottomNavBarUI
-import com.example.ecomerceapp.screen.ui_components.TopAppBarUI
+import com.example.ecomerceapp.screen.home_screen_ui_components.BottomNavBarUI
+import com.example.ecomerceapp.screen.home_screen_ui_components.TopAppBarUI
 import com.example.ecomerceapp.viewmodel.HomeUIViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

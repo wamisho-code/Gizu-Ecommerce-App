@@ -17,9 +17,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,6 +32,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.example.ecomerceapp.R
 import com.example.ecomerceapp.ui.theme.Blue
@@ -38,6 +41,7 @@ import com.example.ecomerceapp.viewmodel.PostProductViewModel
 
 @Composable
 fun GetImagesFromPhoneUi(uiState: PostProductUiState,viewModel: PostProductViewModel){
+    val isImageSelected by viewModel.isImageSelected.collectAsStateWithLifecycle()
     val imagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents()
     ) { uris->
@@ -96,9 +100,11 @@ fun GetImagesFromPhoneUi(uiState: PostProductUiState,viewModel: PostProductViewM
         if (uiState.selectedImages.size < 5) {
 
             item {
+                val borderColor= if(isImageSelected ) Blue else MaterialTheme.colorScheme.error
 
                 OutlinedButton (
-                    border = BorderStroke(2.dp,Blue),
+
+                    border = BorderStroke(2.dp,borderColor),
                     onClick = {
                         imagePicker.launch("image/*")
                     },
@@ -113,13 +119,13 @@ fun GetImagesFromPhoneUi(uiState: PostProductUiState,viewModel: PostProductViewM
                         Icon(
                             modifier = Modifier.size(50.dp),
                             painter = painterResource(R.drawable.add_image_icon),
-                            tint = Blue,
+                            tint = borderColor,
                             contentDescription = null
                         )
                         Spacer(modifier = Modifier.height(3.dp))
                         Text(
                             text = "Add",
-                            color = Blue
+                            color = borderColor
                         )
                     }
                 }

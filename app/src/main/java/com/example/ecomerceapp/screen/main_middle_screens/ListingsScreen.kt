@@ -1,7 +1,6 @@
 package com.example.ecomerceapp.screen.main_middle_screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,8 +17,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.ecomerceapp.screen.ui_components.VectorImgCardSlide
-import com.example.ecomerceapp.ui.theme.Blue
+import com.example.ecomerceapp.screen.home_screen_ui_components.VectorImgCardSlide
 import com.example.ecomerceapp.ui.theme.michroma_regular_font
 
 @Composable

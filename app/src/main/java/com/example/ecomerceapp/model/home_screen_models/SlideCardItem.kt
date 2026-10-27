@@ -1,4 +1,4 @@
-package com.example.ecomerceapp.model
+package com.example.ecomerceapp.model.home_screen_models
 
 import androidx.annotation.DrawableRes
 

@@ -40,7 +40,7 @@ fun AddAttributeUi(uiState: PostProductUiState,viewModel: PostProductViewModel){
     )
     Spacer(modifier = Modifier.height(5.dp))
     Text(
-        text = "You can select a maximum of 5 attributes like color : red",
+        text = "This is not mandatory but it is good to describe your product.\nYou can select a maximum of 5 attributes.",
         fontSize =15.sp,
         fontStyle = FontStyle.Italic,
         color = Color.Gray

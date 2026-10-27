@@ -1,6 +1,6 @@
 package com.example.ecomerceapp.repository
 
-import com.example.ecomerceapp.model.UserModel
+import com.example.ecomerceapp.model.user_models.UserModel
 import com.example.ecomerceapp.uistate.LoginUiState
 import com.example.ecomerceapp.uistate.SignUpUiState
 import com.example.ecomerceapp.utility.ToastUtility

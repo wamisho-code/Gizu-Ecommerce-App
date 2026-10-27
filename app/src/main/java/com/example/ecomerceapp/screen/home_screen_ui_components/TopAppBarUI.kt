@@ -1,11 +1,8 @@
-package com.example.ecomerceapp.screen.ui_components
+package com.example.ecomerceapp.screen.home_screen_ui_components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
@@ -20,8 +17,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -29,14 +24,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.example.ecomerceapp.R
-import com.example.ecomerceapp.screen.SearchScreen
 import com.example.ecomerceapp.ui.theme.Orange
 import com.example.ecomerceapp.ui.theme.montserrat_regular_font
 import com.example.ecomerceapp.ui.theme.orangeGradientVertical
 import com.example.ecomerceapp.ui.theme.pattaya_regular_font
 import com.example.ecomerceapp.ui.theme.whiteBackgroundColor
-import com.example.ecomerceapp.utility.ToastUtility
 import com.example.ecomerceapp.viewmodel.HomeUIViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

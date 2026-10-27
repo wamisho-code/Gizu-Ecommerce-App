@@ -1,7 +1,7 @@
 package com.example.ecomerceapp.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.example.ecomerceapp.model.UserDto
+import com.example.ecomerceapp.model.user_models.UserDto
 import com.example.ecomerceapp.repository.AuthRepository
 import com.example.ecomerceapp.repository.UserInfoRepository
 import kotlinx.coroutines.flow.MutableStateFlow
