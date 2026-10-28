@@ -4,16 +4,21 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.ecomerceapp.model.input_validation_models.PostProductFirstPartValidationResult
 import com.example.ecomerceapp.model.input_validation_models.PostProductThirdPartValidationResult
+import com.example.ecomerceapp.repository.PostProductRepository
 import com.example.ecomerceapp.uistate.PostProductUiState
 import com.example.ecomerceapp.utility.BasicDataCheckUtility
 import com.example.ecomerceapp.utility.ToastUtility
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class PostProductViewModel: ViewModel() {
+class PostProductViewModel(private val postProductRepo:
+                           PostProductRepository= PostProductRepository()
+): ViewModel() {
     private val  _uiState= MutableStateFlow(PostProductUiState())
     private val _isImageSelected= MutableStateFlow(true)
     val isImageSelected= _isImageSelected.asStateFlow()
@@ -31,6 +36,22 @@ class PostProductViewModel: ViewModel() {
         )
     )
     val inputStatusForThirdPart = _inputStatusForThirdPart.asStateFlow()
+
+    //uploading product related
+    private val _isPosting = MutableStateFlow(false)
+    val isPosting= _isPosting.asStateFlow()
+    private val _postSuccess= MutableStateFlow(false)
+    val postSuccess = _postSuccess.asStateFlow()
+
+    private val _postMessage= MutableStateFlow<String?>(null)
+    val postMessage = _postMessage.asStateFlow()
+
+
+    //
+
+    private val _isPostButtonActive= MutableStateFlow(true)
+    val isPostButtonActive = _isPostButtonActive.asStateFlow()
+
 
     val uiState= _uiState.asStateFlow()
     fun setProductName(name:String){
@@ -187,6 +208,30 @@ class PostProductViewModel: ViewModel() {
         _uiState.update {
             it.copy(isLoading = false)
         }
+    }
+    fun postProduct(productUiState: PostProductUiState){
+        if(_isPosting.value)
+            return
+        viewModelScope.launch {
+            _isPostButtonActive.value=false
+            _isPosting.value=true
+            _postSuccess.value=false
+            _postMessage.value=null
+            try{
+                postProductRepo.postProduct(productUiState){success,message->
+                    _postSuccess.value= success
+                    _postMessage.value=message ?: if(success)
+                        "Product Successfully Posted!" else null
+
+                }
+            }finally {
+                _isPosting.value=false
+                if(!_postSuccess.value)
+                    _isPostButtonActive.value=true
+
+            }
+        }
+
     }
 
 

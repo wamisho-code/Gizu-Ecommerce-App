@@ -16,6 +16,10 @@ val blueGradientHorizontal = Brush.horizontalGradient(colors = gradientColors_bl
 val Orange= Color(0xFFF88127)
 val Blue= Color(0xFF2A73F1)
 val Crimson= Color(0xFFF36481)
+val SuccessGreenBackground= Color(0xFF98EFBF)
+val SuccessGreen= Color(0xFF000000)
+
+
 val whiteBackgroundColor= Color(0xFFF8F9FA)
 val gradientColors_orange_crimson = listOf(Color(0xFFF88127), Color(0xFFF36481)) // orange to crimson
 val orangeGradientVertical = Brush.verticalGradient(colors = gradientColors_orange_crimson)

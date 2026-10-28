@@ -14,6 +14,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.ecomerceapp.ui.theme.Blue
 import com.example.ecomerceapp.ui.theme.Orange
 import com.example.ecomerceapp.uistate.PostProductUiState
@@ -34,12 +36,13 @@ fun PostProductPagerButtons(pagerSate: PagerState,
                             pageCount: Int, viewModel: PostProductViewModel,
                             uiState: PostProductUiState) {
     val context= LocalContext.current
+    val isPostButtonActive by viewModel.isPostButtonActive.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope ()
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        if(pagerSate.currentPage in 1..<2){
+        if(pagerSate.currentPage in 1..<3){
             Button(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Blue
@@ -87,6 +90,7 @@ fun PostProductPagerButtons(pagerSate: PagerState,
             }
         }else{
             Button(
+                enabled = isPostButtonActive,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Blue
                 ),
@@ -97,7 +101,7 @@ fun PostProductPagerButtons(pagerSate: PagerState,
                 onClick = {
                     val isPart3Valid= viewModel.changeErrorStatusForThirdPart(uiState)
                     if(isPart3Valid){
-                        viewModel.showProgress()
+                        viewModel.postProduct(uiState)
                     }
                 }
             ) {

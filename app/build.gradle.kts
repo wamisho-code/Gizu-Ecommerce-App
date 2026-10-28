@@ -41,6 +41,10 @@ android {
 }
 
 dependencies {
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+    implementation("com.cloudinary:cloudinary-android:3.1.2")
+    //to display image selected from phone
     implementation("io.coil-kt.coil3:coil-compose:3.3.0")
 
     implementation("androidx.room:room-runtime:2.8.5")
