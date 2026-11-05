@@ -3,8 +3,10 @@ package com.example.ecomerceapp.screen.main_middle_screens.listing_ui_components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,15 +35,30 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.ecomerceapp.R
 import com.example.ecomerceapp.model.product_models.ProductModel
+import com.example.ecomerceapp.screen.ProductDetailScreen
+import com.example.ecomerceapp.ui.theme.Blue
+import com.example.ecomerceapp.ui.theme.Orange
+import com.example.ecomerceapp.ui.theme.SuccessGreen
 
 @Composable
-fun ProductCardUi(product: ProductModel){
+fun ProductCardUi(paddingValues: PaddingValues,product: ProductModel,
+                  onProductClicked:(ProductModel)-> Unit){
     Card(
         modifier = Modifier.fillMaxWidth()
-            .height(260.dp),
+            .height(260.dp)
+            .clickable(
+                onClick = {
+                    onProductClicked(product)
+//                    navController.currentBackStackEntry
+//                        ?.savedStateHandle
+//                        ?.set("product",product)
+//                    navController.navigate("product-detail")
+                }
+            ),
         elevation = CardDefaults.elevatedCardElevation(
             defaultElevation = 3.dp
         )
@@ -97,7 +114,7 @@ fun ProductCardUi(product: ProductModel){
                     fontWeight = FontWeight.Bold
                 )
             )
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 modifier = Modifier.weight(3f)
                     .padding(start = 10.dp, end = 10.dp),
@@ -106,6 +123,21 @@ fun ProductCardUi(product: ProductModel){
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                modifier = Modifier
+                    .background(
+                        if (product.condition.toString()=="NEW") Blue
+                        else Orange
+                    )
+                    .padding(start = 10.dp, end = 10.dp),
+                text = product.condition.toString(),
+                style = TextStyle(
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                ),
+                color = Color.White
             )
 
 

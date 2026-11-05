@@ -7,6 +7,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -14,6 +18,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.ecomerceapp.model.product_models.ProductModel
 import com.example.ecomerceapp.screen.main_middle_screens.CartScreen
 import com.example.ecomerceapp.screen.main_middle_screens.ListingsScreen
 import com.example.ecomerceapp.screen.main_middle_screens.PostProductScreen
@@ -27,6 +32,9 @@ import com.example.ecomerceapp.viewmodel.HomeUIViewModel
 @Composable
 fun HomeScreen(homeUIViewModel: HomeUIViewModel= viewModel(),navController: NavController){
     val navControllerMiddleContent = rememberNavController()
+    var selectedProduct by remember {
+        mutableStateOf<ProductModel?>(null)
+    }
     LaunchedEffect(Unit) {
         homeUIViewModel.getUserInfo { bool, message ->
             if (!bool) {
@@ -53,7 +61,14 @@ fun HomeScreen(homeUIViewModel: HomeUIViewModel= viewModel(),navController: NavC
         ) {
 
             composable("listing"){
-                ListingsScreen(innerPadding.calculateTopPadding())
+                ListingsScreen(
+                    padValues = innerPadding,
+                    onProductClicked= { product->
+                        selectedProduct=product
+                        navControllerMiddleContent.navigate("product-detail")
+                    }
+
+                )
             }
             composable("post-product"){
                 PostProductScreen(innerPadding = innerPadding)
@@ -66,6 +81,14 @@ fun HomeScreen(homeUIViewModel: HomeUIViewModel= viewModel(),navController: NavC
             }
             composable("cart"){
                 CartScreen()
+            }
+            composable("product-detail"){ backStackEntry->
+                selectedProduct?.let {
+                    ProductDetailScreen(
+                        paddingValues = innerPadding,
+                        product = selectedProduct
+                    )
+                }
             }
         }
 

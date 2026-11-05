@@ -11,12 +11,14 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.ecomerceapp.model.product_models.ProductModel
 
 @Composable
-fun ProductsListUi(products: List<ProductModel>, modifier: Modifier){
+fun ProductsListUi(paddingValues: PaddingValues,products: List<ProductModel>,
+                   onProductClicked:(ProductModel)-> Unit){
     LazyVerticalGrid(
-        modifier = modifier,
+
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -26,7 +28,11 @@ fun ProductsListUi(products: List<ProductModel>, modifier: Modifier){
             items = products,
             key = {it.productId}
         ){ product->
-            ProductCardUi(product)
+            ProductCardUi(
+                paddingValues = paddingValues,
+                product = product,
+                onProductClicked=onProductClicked
+                )
         }
 
     }
