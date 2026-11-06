@@ -3,6 +3,7 @@ package com.example.ecomerceapp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -51,5 +52,12 @@ fun  AppNavigation() {
             HomeScreen(navController=navController)
         }
 
+    }
+}
+fun NavController.navigateToTab(route: String) {
+    navigate(route) {
+        popUpTo(graph.startDestinationId) { saveState = true }
+        launchSingleTop = true
+        restoreState = true
     }
 }

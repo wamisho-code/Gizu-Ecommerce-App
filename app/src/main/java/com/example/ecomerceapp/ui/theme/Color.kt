@@ -17,7 +17,7 @@ val Orange= Color(0xFFF88127)
 val Blue= Color(0xFF2A73F1)
 val Crimson= Color(0xFFF36481)
 val SuccessGreenBackground= Color(0xFF98EFBF)
-val SuccessGreen= Color(0xFF000000)
+val SuccessGreen= Color(0xFF0B8619)
 
 
 val whiteBackgroundColor= Color(0xFFF8F9FA)

@@ -49,7 +49,7 @@ fun ListingLoadingUi(message:String?){
         Spacer(modifier = Modifier.height(30.dp))
         if(message==null)
             LottieAnimation(
-                modifier = Modifier.width(100.dp),
+                modifier = Modifier.width(70.dp),
                 composition=compositionForLoading,
                 contentScale = ContentScale.Crop,
                 progress = progressForEver)
