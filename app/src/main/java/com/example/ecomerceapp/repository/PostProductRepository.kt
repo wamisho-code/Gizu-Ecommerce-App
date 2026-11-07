@@ -4,6 +4,7 @@ import com.example.ecomerceapp.model.product_models.ProductImageModel
 import com.example.ecomerceapp.model.product_models.ProductModel
 import com.example.ecomerceapp.model.product_models.enums.ProductCondition
 import com.example.ecomerceapp.uistate.PostProductUiState
+import com.example.ecomerceapp.utility.BasicDataCheckUtility
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -46,6 +47,7 @@ class PostProductRepository(private  val cloudinaryRepository:
             productId=productId,
             userId=userId
         )
+        val searchToken = BasicDataCheckUtility.generateSearchTokens(product)
         fireStore.collection("products")
             .document(productId)
             .set(
@@ -54,6 +56,8 @@ class PostProductRepository(private  val cloudinaryRepository:
                     "sellerId" to product.sellerId,
                     "productName" to product.productName,
                     "productDescription" to product.productDescription,
+                    "searchTokens"  to searchToken,
+                    "productCategory" to product.productCategory,
                     "attributes" to  product.attributes,
                     "productImages" to product.productImages,
                     "price" to product.price,
@@ -77,6 +81,7 @@ class PostProductRepository(private  val cloudinaryRepository:
             sellerId = userId,
             productName = productUiState.name,
             productDescription = productUiState.description,
+            productCategory = productUiState.category,
             attributes = productUiState.attributes,
             productImages =images,
             price = productUiState.price.toDouble(),
@@ -85,4 +90,5 @@ class PostProductRepository(private  val cloudinaryRepository:
             )
 
     }
+
 }

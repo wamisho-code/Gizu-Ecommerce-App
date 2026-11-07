@@ -44,6 +44,11 @@ android {
 }
 
 dependencies {
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.1")
+    implementation("androidx.compose.runtime:runtime-livedata:1.7.6")
+
+
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
     implementation("com.cloudinary:cloudinary-android:3.1.2")

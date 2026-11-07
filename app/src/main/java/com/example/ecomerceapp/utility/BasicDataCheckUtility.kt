@@ -5,6 +5,7 @@ import com.example.ecomerceapp.model.input_validation_models.LoginValidationResu
 import com.example.ecomerceapp.model.input_validation_models.PostProductFirstPartValidationResult
 import com.example.ecomerceapp.model.input_validation_models.PostProductThirdPartValidationResult
 import com.example.ecomerceapp.model.input_validation_models.SignUpValidationResult
+import com.example.ecomerceapp.model.product_models.ProductModel
 import com.example.ecomerceapp.uistate.LoginUiState
 import com.example.ecomerceapp.uistate.PostProductUiState
 import com.example.ecomerceapp.uistate.SignUpUiState
@@ -133,6 +134,21 @@ class BasicDataCheckUtility(signUpUIViewModel: SignUpUIViewModel) {
                 areAllValid =  isPriceValid && isQuantityValid
             )
         }
+        fun generateSearchTokens(product: ProductModel): List<String> {
+
+            return (
+                    product.productName + " " +
+                            product.productCategory + " " +
+                            product.productDescription
+                    )
+                .lowercase()
+                .split(Regex("[^a-z0-9]+"))
+                .filter { it.length > 1 }
+                .distinct()
+        }
+
+
+
     }
 
 

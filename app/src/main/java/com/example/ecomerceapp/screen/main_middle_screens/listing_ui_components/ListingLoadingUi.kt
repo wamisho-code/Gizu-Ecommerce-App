@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,15 +33,16 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.ecomerceapp.R
+import com.example.ecomerceapp.ui.theme.Orange
 
 @Composable
 fun ListingLoadingUi(message:String?){
-    val compositionForLoading by rememberLottieComposition(
-        LottieCompositionSpec.RawRes(R.raw.loading_animation))
-    val progressForEver by animateLottieCompositionAsState(
-        composition = compositionForLoading,
-        iterations = LottieConstants.IterateForever
-    )
+//    val compositionForLoading by rememberLottieComposition(
+//        LottieCompositionSpec.RawRes(R.raw.loading_animation))
+//    val progressForEver by animateLottieCompositionAsState(
+//        composition = compositionForLoading,
+//        iterations = LottieConstants.IterateForever
+//    )
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -48,11 +50,10 @@ fun ListingLoadingUi(message:String?){
     ) {
         Spacer(modifier = Modifier.height(30.dp))
         if(message==null)
-            LottieAnimation(
-                modifier = Modifier.width(70.dp),
-                composition=compositionForLoading,
-                contentScale = ContentScale.Crop,
-                progress = progressForEver)
+            CircularProgressIndicator(
+                modifier = Modifier.size(25.dp),
+                color = Orange
+            )
         else
             Row(
                 modifier = Modifier.fillMaxSize()

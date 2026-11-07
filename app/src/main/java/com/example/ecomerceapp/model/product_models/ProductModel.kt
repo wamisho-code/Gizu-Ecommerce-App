@@ -8,6 +8,8 @@ data class ProductModel(
     val sellerId:String="",
     val productName:String="",
     val productDescription: String="",
+    val productCategory: String ="",
+    val searchTokens: List<String> = emptyList(),
     val attributes: Map<String,String> = emptyMap(),
     val productImages: List<ProductImageModel> = emptyList(),
     val price: Double=0.0,

@@ -36,13 +36,7 @@ fun HomeScreen(homeUIViewModel: HomeUIViewModel= viewModel(),navController: NavC
     var selectedProduct by remember {
         mutableStateOf<ProductModel?>(null)
     }
-    LaunchedEffect(Unit) {
-        homeUIViewModel.getUserInfo { bool, message ->
-            if (!bool) {
-                println("me: $message")
-            }
-        }
-    }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -81,7 +75,7 @@ fun HomeScreen(homeUIViewModel: HomeUIViewModel= viewModel(),navController: NavC
                 SettingsScreen()
             }
             composable("cart"){
-                CartScreen()
+                CartScreen(innerPadding)
             }
             composable("product-detail"){ backStackEntry->
                 selectedProduct?.let {

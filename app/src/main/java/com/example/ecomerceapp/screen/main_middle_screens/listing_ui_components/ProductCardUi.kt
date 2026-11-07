@@ -6,9 +6,11 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,6 +35,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -49,7 +52,7 @@ fun ProductCardUi(paddingValues: PaddingValues,product: ProductModel,
                   onProductClicked:(ProductModel)-> Unit){
     Card(
         modifier = Modifier.fillMaxWidth()
-            .height(260.dp)
+            .height(310.dp)
             .clickable(
                 onClick = {
                     onProductClicked(product)
@@ -65,12 +68,17 @@ fun ProductCardUi(paddingValues: PaddingValues,product: ProductModel,
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
+
         ){
-            Box() {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp)
+            ) {
 
                 AsyncImage(
                     modifier = Modifier.fillMaxWidth()
-                        .height(160.dp)
+                        .fillMaxHeight()
                         .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)),
                     model = product.productImages.firstOrNull()?.url,
                     contentDescription = product.productName,
@@ -102,44 +110,54 @@ fun ProductCardUi(paddingValues: PaddingValues,product: ProductModel,
                 }
 
             }
-
-            Spacer(modifier = Modifier.height(15.dp))
-            Text(
+            Column(
                 modifier = Modifier.fillMaxWidth()
-                    .padding(start = 10.dp, end = 10.dp),
-                text = product.productName,
-                maxLines = 2,
-                style = TextStyle(
-                    fontSize = 17.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                modifier = Modifier.weight(3f)
-                    .padding(start = 10.dp, end = 10.dp),
-                text = product.price.toString() +" ETB",
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                modifier = Modifier
-                    .background(
-                        if (product.condition.toString()=="NEW") Blue
-                        else Orange
-                    )
-                    .padding(start = 10.dp, end = 10.dp),
-                text = product.condition.toString(),
-                style = TextStyle(
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                ),
-                color = Color.White
-            )
+                    .height(145.dp)
+                    .padding(vertical = 10.dp, horizontal = 10.dp)
+            ) {
 
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = product.productName,
+                    maxLines = 2,
+                    minLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    style = TextStyle(
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    text = "${product.price} ETB",
+                    softWrap = false,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = TextStyle(
+                        fontSize = 17.sp,
+                        fontWeight = FontWeight.Bold
+                    ),
+
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(5.dp))
+                        .background(
+                            if (product.condition.toString() == "NEW") Blue
+                            else Orange
+                        )
+                        .padding(vertical = 7.dp, horizontal = 12.dp),
+                    text = product.condition.toString(),
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                    ),
+                    color = Color.White
+                )
+            }
 
         }
     }
