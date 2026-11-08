@@ -24,4 +24,7 @@ public interface CartDao {
     LiveData<List<CartEntity>> getCartItems();
     @Query("SELECT * FROM cart WHERE productId = :productId LIMIT 1")
     CartEntity getCartItem(String productId);
+
+    @Query("SELECT EXISTS(SELECT 1 FROM cart WHERE productId = :productId)")
+    LiveData<Boolean> isAddedToCart(String productId);
 }

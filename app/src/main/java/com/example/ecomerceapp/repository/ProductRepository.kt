@@ -6,7 +6,9 @@ import com.example.ecomerceapp.utility.BasicDataCheckUtility
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.tasks.await
+import kotlin.jvm.Throws
 
 class ProductRepository {
     private val fireStore= FirebaseFirestore.getInstance()
@@ -30,6 +32,30 @@ class ProductRepository {
 
             }
 
+    }
+    suspend fun fetchProduct(
+        id: String,
+        onResult: (ProductModel) -> Unit,
+        onError: (String?) -> Unit
+    ) {
+        try {
+            val productSnapshot = fireStore.collection("products")
+                .document(id)
+                .get()
+                .await()
+
+            if (productSnapshot.exists()) {
+                val product = productSnapshot.toObject(ProductModel::class.java)
+                    ?: throw Exception("Failed to convert product")
+
+                onResult(product)
+            } else {
+                throw Exception("Product not found!")
+            }
+
+        } catch (e: Exception) {
+            onError(e.message)
+        }
     }
     suspend fun getRelatedProducts(
         product: ProductModel

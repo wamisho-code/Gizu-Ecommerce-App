@@ -75,7 +75,12 @@ fun HomeScreen(homeUIViewModel: HomeUIViewModel= viewModel(),navController: NavC
                 SettingsScreen()
             }
             composable("cart"){
-                CartScreen(innerPadding)
+                CartScreen(
+                    innerPadding=innerPadding,
+                    onProductClicked= { product->
+                        selectedProduct=product
+                        navControllerMiddleContent.navigateToTab("product-detail")
+                    })
             }
             composable("product-detail"){ backStackEntry->
                 selectedProduct?.let {

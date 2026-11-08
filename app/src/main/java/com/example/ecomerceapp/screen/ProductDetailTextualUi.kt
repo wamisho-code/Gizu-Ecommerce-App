@@ -36,6 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -60,13 +61,17 @@ import com.example.ecomerceapp.ui.theme.Crimson
 import com.example.ecomerceapp.ui.theme.Orange
 import com.example.ecomerceapp.ui.theme.SuccessGreen
 import com.example.ecomerceapp.ui.theme.orangeGradientVertical
+import com.example.ecomerceapp.utility.DataMappingUtility
 import com.example.ecomerceapp.utility.ToastUtility
+import com.example.ecomerceapp.viewmodel.CartViewModel
 import com.example.ecomerceapp.viewmodel.HomeUIViewModel
 import java.text.NumberFormat
 import java.util.Locale
 
 @Composable
-fun ProductDetailTextualUi(homeUIViewModel: HomeUIViewModel= viewModel(),product: ProductModel){
+fun ProductDetailTextualUi(homeUIViewModel: HomeUIViewModel= viewModel()
+                           ,product: ProductModel,
+                           cartViewModel: CartViewModel=viewModel()){
     var howManyProduct by remember {
         mutableStateOf(1)
     }
@@ -79,6 +84,8 @@ fun ProductDetailTextualUi(homeUIViewModel: HomeUIViewModel= viewModel(),product
             }
         }
     }
+    val isAddedToCart by cartViewModel.isAddedToCart(product.productId)
+        .observeAsState(false)
     val price= NumberFormat.getNumberInstance(Locale.US).format(product.price)
     val quantity= NumberFormat.getNumberInstance(Locale.US).format(product.quantity)
 
@@ -111,21 +118,36 @@ fun ProductDetailTextualUi(homeUIViewModel: HomeUIViewModel= viewModel(),product
                 fontWeight = FontWeight.Bold,
             )
         )
-        IconButton(
-            modifier = Modifier.wrapContentSize()
-                .padding(10.dp),
-            onClick = {},
-            colors = IconButtonDefaults.iconButtonColors(
-                containerColor = Crimson.copy(alpha = 0.35f)
-            )
-        ) {
-            Icon(
-                modifier = Modifier.size(19.dp),
-                painter = painterResource(R.drawable.add__to_shopping_cart_icon),
-                contentDescription = null,
-                tint = Color.Black
-            )
-        }
+        Spacer(modifier = Modifier.width(10.dp))
+        Icon(
+            modifier = Modifier.size(30.dp)
+                .clickable(
+                    onClick = {
+                        if(isAddedToCart){
+                            cartViewModel.fetchCart(product.productId){ cart->
+                                if (cart!= null){
+                                    cartViewModel.deleteFromCart(cart.id)
+                                }else{
+                                    ToastUtility.makeLongToast(
+                                        context,
+                                        "Something went wrong"
+                                    )
+                                }
+
+                            }
+                        }else{
+                            val cart= DataMappingUtility.mapCartEntity(product)
+                            cartViewModel.addToCart(cart)
+                        }
+                    }
+                ),
+            painter = if(isAddedToCart)
+                painterResource(R.drawable.remove_cart_svg)
+            else painterResource(R.drawable.add__to_shopping_cart_icon),
+            contentDescription = null,
+            tint =  Crimson
+        )
+
 
     }
     Spacer(modifier = Modifier.height(20.dp))

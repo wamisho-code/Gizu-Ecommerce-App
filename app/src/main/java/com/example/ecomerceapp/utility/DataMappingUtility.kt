@@ -1,5 +1,6 @@
 package com.example.ecomerceapp.utility
 
+import com.example.ecomerceapp.local_database.entity.CartEntity
 import com.example.ecomerceapp.model.product_models.ProductImageModel
 import com.example.ecomerceapp.model.product_models.ProductModel
 import com.example.ecomerceapp.repository.CloudinaryRepository
@@ -16,6 +17,16 @@ class DataMappingUtility() {
 
             )
 
+        }
+        fun mapCartEntity(product: ProductModel): CartEntity {
+            val cart = CartEntity()
+
+            cart.productId = product.productId
+            cart.productName = product.productName
+            cart.productImage = product.productImages.firstOrNull()?.url ?: ""
+            cart.price = product.price
+
+            return cart
         }
     }
 }

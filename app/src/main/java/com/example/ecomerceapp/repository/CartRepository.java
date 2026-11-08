@@ -11,6 +11,7 @@ import com.example.ecomerceapp.local_database.entity.CartEntity;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 public class CartRepository {
     private final CartDao cartDao;
@@ -37,10 +38,20 @@ public class CartRepository {
         });
     }
     public void deleteCart(int cartId){
-        cartDao.deleteCart(cartId);
+        executor.execute(() -> cartDao.deleteCart(cartId));
     }
 
     public void updateCart(CartEntity cart){
-        cartDao.updateCart(cart);
+        executor.execute(() -> cartDao.updateCart(cart));
     }
+    public  LiveData<Boolean> isAddedToCart(String productId){
+        return cartDao.isAddedToCart(productId);
+    }
+    public void fetchCart(String productId, Consumer<CartEntity> onResult) {
+        executor.execute(() -> {
+            CartEntity cart = cartDao.getCartItem(productId);
+            onResult.accept(cart);
+        });
+    }
+
 }
